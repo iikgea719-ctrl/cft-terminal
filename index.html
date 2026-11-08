@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d16">
+<title>CFT | Crypto & Financial Terminal</title>
+<style>
+:root {
+  --bg:#080d16;
+  --panel:#101927;
+  --border:#202d3e;
+  --text:#e7edf5;
+  --muted:#8594a8;
+  --green:#16c784;
+  --red:#ea3943;
+  --blue:#4389ff;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+}
+header {
+  height:65px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 5%;
+  border-bottom:1px solid var(--border);
+  background:#0b111d;
+}
+.brand {font-size:24px;font-weight:800;letter-spacing:2px}
+.brand span {color:var(--green)}
+.status {font-size:11px;color:var(--green)}
+nav {
+  display:flex;
+  gap:24px;
+  padding:17px 5%;
+  border-bottom:1px solid var(--border);
+  overflow-x:auto;
+  white-space:nowrap;
+}
+nav a {
+  color:var(--muted);
+  text-decoration:none;
+  font-size:12px;
+}
+nav a:first-child {color:var(--green)}
+main {padding:30px 5%;max-width:1500px;margin:auto}
+.eyebrow {
+  color:var(--green);
+  font-size:11px;
+  letter-spacing:2px;
+}
+h1 {font-size:30px;margin:10px 0}
+.subtitle {color:var(--muted);font-size:13px}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin:25px 0;
+}
+.panel {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:19px;
+}
+.metric-label {font-size:11px;color:var(--muted)}
+.metric-value {font-size:23px;font-weight:bold;margin:12px 0}
+.up {color:var(--green)}
+.down {color:var(--red)}
+.section-title {
+  font-size:17px;
+  margin:32px 0 15px;
+}
+table {
+  width:100%;
+  border-collapse:collapse;
+  min-width:600px;
+}
+th,td {
+  padding:16px 12px;
+  text-align:left;
+  border-bottom:1px solid var(--border);
+  font-size:12px;
+}
+th {color:var(--muted);font-weight:normal}
+.table-wrap {overflow-x:auto}
+.asset {font-weight:bold}
+.symbol {color:var(--muted);margin-left:7px}
+.news-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.news-category {color:var(--green);font-size:10px}
+.news-card h3 {font-size:15px;line-height:1.5}
+.news-card p {color:var(--muted);font-size:12px}
+footer {
+  margin-top:50px;
+  padding:25px 5%;
+  border-top:1px solid var(--border);
+  color:var(--muted);
+  font-size:11px;
+}
+@media(max-width:800px) {
+  .grid {grid-template-columns:repeat(2,1fr)}
+  .news-grid {grid-template-columns:1fr}
+  main {padding:25px 4%}
+  h1 {font-size:25px}
+}
+@media(max-width:420px) {
+  .metric-value {font-size:18px}
+  header {padding:0 4%}
+}
+
+.asset-logo {
+  width:24px;
+  height:24px;
+  object-fit:contain;
+  vertical-align:middle;
+  margin-right:9px;
+  border-radius:50%;
+}
+
+
+.asset-cell {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:150px;
+}
+.asset-logo {
+  width:24px;
+  height:24px;
+  object-fit:contain;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.asset-name {
+  font-weight:600;
+}
+.symbol {
+  color:#8290a5;
+  font-size:11px;
+  margin-left:5px;
+}
+
+
+    .cft-scanner {
+      margin: 35px 0;
+      padding: 22px;
+      background: #101a2a;
+      border: 1px solid #26364d;
+      border-radius: 14px;
+      color: #e8eef7;
+      overflow: hidden;
+    }
+    .scanner-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .scanner-heading h2 {
+      margin: 7px 0;
+      color: #ffffff;
+    }
+    .scanner-heading p {
+      color: #9aa9bc;
+      font-size: 13px;
+    }
+    .scanner-eyebrow {
+      color: #48a9ff;
+      font-size: 10px;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+    .scanner-status {
+      color: #5de0a1;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .scanner-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .scanner-controls input,
+    .scanner-controls select {
+      flex: 1;
+      min-width: 150px;
+      padding: 11px;
+      color: #ffffff;
+      background: #17263a;
+      border: 1px solid #344760;
+      border-radius: 7px;
+    }
+    .scanner-controls button,
+    .dex-tab {
+      padding: 10px 14px;
+      color: #dce8f7;
+      background: #1a2b42;
+      border: 1px solid #344760;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+    .dex-tab.active {
+      color: #ffffff;
+      background: #1768bd;
+      border-color: #2788e5;
+    }
+    .scanner-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+    .scanner-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .scanner-table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+    }
+    .scanner-table th,
+    .scanner-table td {
+      padding: 13px 10px;
+      text-align: left;
+      border-bottom: 1px solid #26364d;
+      white-space: nowrap;
+      font-size: 12px;
+    }
+    .scanner-table th {
+      color: #8fa4bd;
+      font-size: 10px;
+    }
+    .scanner-pair-name {
+      color: #ffffff;
+      font-weight: 700;
+    }
+    .scanner-subtext {
+      display: block;
+      color: #8497ad;
+      font-size: 10px;
+      margin-top: 4px;
+    }
+    .scanner-footer {
+      color: #8fa4bd;
+      font-size: 11px;
+      margin-top: 15px;
+    }
+    .scanner-link {
+      color: inherit;
+      text-decoration: none;
+    }
+    @media(max-width:600px) {
+      .cft-scanner { padding: 14px; }
+      .scanner-controls { flex-direction: column; }
+      .scanner-controls input,
+      .scanner-controls select,
+      .scanner-controls button { width: 100%; }
+    }
+    
+
+.scanner-token-logo {
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  object-fit:contain;
+  vertical-align:middle;
+  margin-right:7px;
+  background:#ffffff;
+}
+.scanner-change-up {
+  color:#38d996;
+  font-weight:700;
+}
+.scanner-change-down {
+  color:#ff647c;
+  font-weight:700;
+}
+
+
+.dex-market-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #26364d;
+}
+.dex-market-section h3 {
+  color: #ffffff;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+.dex-description {
+  color: #91a2b7;
+  font-size: 12px;
+  margin-bottom: 14px;
+}
+.dex-load-more {
+  margin-top: 14px;
+  padding: 10px 18px;
+  border: 1px solid #357fc4;
+  background: #173d65;
+  color: #ffffff;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.dex-load-more:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.scanner-token-logo {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 7px;
+  background: #ffffff;
+}
+.scanner-logo-fallback {
+  display: inline-flex;
+  width: 25px;
+  height: 25px;
+  align-items: center;
+  justify-content: center;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: #30445f;
+  color: #ffffff;
+  font-size: 9px;
+  vertical-align: middle;
+}
+
+
+/* CFT PERMANENT SIDEBAR LAYOUT */
+.cft-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  z-index: 1000;
+  overflow-y: auto;
+  background: #0b121d;
+  border-right: 1px solid var(--border);
+  padding: 25px 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-brand {
+  padding: 4px 10px 27px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-brand .brand {
+  font-size: 29px;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+.sidebar-subtitle {
+  color: var(--muted);
+  font-size: 8px;
+  letter-spacing: 1px;
+  margin-top: 5px;
+}
+
+.sidebar-label {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  margin: 27px 10px 12px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  white-space: normal;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 42px;
+  padding: 10px;
+  border-radius: 5px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: .3px;
+  transition: background .2s, color .2s;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+  color: var(--green);
+  background: #14251f;
+}
+
+.nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 20px 10px 5px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.8;
+  letter-spacing: 1px;
+}
+
+.cft-topbar {
+  height: 65px;
+  margin-left: 240px;
+  padding: 0 30px;
+  justify-content: space-between;
+}
+
+.topbar-label {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+
+main {
+  margin-left: 240px;
+  max-width: none;
+  padding: 30px;
+}
+
+footer {
+  margin-left: 240px;
+}
+
+@media(max-width:800px) {
+  .cft-sidebar {
+    width: 138px;
+    padding: 18px 7px;
+  }
+
+  .sidebar-brand {
+    padding: 4px 5px 20px;
+  }
+
+  .sidebar-brand .brand {
+    font-size: 23px;
+  }
+
+  .sidebar-subtitle {
+    font-size: 6px;
+    letter-spacing: 0;
+  }
+
+  .sidebar-label {
+    font-size: 8px;
+    margin: 20px 5px 10px;
+  }
+
+  .sidebar-nav {
+    gap: 4px;
+  }
+
+  .sidebar-nav a {
+    min-height: 40px;
+    gap: 5px;
+    padding: 8px 5px;
+    font-size: 8px;
+    letter-spacing: 0;
+  }
+
+  .nav-icon {
+    width: 15px;
+    font-size: 14px;
+  }
+
+  .sidebar-footer {
+    font-size: 6px;
+    padding-left: 5px;
+  }
+
+  .cft-topbar {
+    margin-left: 138px;
+    padding: 0 12px;
+    height: 55px;
+  }
+
+  .topbar-label {
+    font-size: 7px;
+    letter-spacing: 0;
+  }
+
+  main {
+    margin-left: 138px;
+    padding: 20px 12px;
+  }
+
+  footer {
+    margin-left: 138px;
+    padding: 20px 12px;
+  }
+}
+
+@media(max-width:420px) {
+  .metric-value {
+    font-size: 18px;
+  }
+}
+
+
+/* CFT PURE BLACK LINE-BASED DESIGN */
+
+body,
+html {
+  background: #000000 !important;
+}
+
+.panel,
+.scanner-table-wrap,
+.dex-market-section,
+.news-card {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.panel {
+  padding: 12px 0;
+  border-bottom: 1px solid #292929 !important;
+}
+
+.grid {
+  gap: 0 22px;
+  margin: 15px 0;
+}
+
+.section-title {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #333333;
+  margin-top: 25px;
+}
+
+.scanner-heading {
+  border-bottom: 1px solid #333333;
+  padding-bottom: 10px;
+}
+
+.dex-market-section {
+  border-bottom: 1px solid #292929 !important;
+  padding-bottom: 12px;
+  margin-bottom: 15px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid #222222 !important;
+}
+
+.news-grid {
+  gap: 0 20px;
+}
+
+.news-card {
+  border-bottom: 1px solid #292929 !important;
+  padding: 12px 0 !important;
+}
+
+.cft-sidebar {
+  background: #000000 !important;
+  border-right: 1px solid #292929 !important;
+}
+
+.cft-topbar {
+  background: #000000 !important;
+  border-bottom: 1px solid #292929 !important;
+}
+
+.sidebar-nav a {
+  border-radius: 0 !important;
+}
+
+.sidebar-nav a.active {
+  background: transparent !important;
+  border-left: 2px solid var(--green);
+}
+
+\n</style>
+</head>
+<body>
+
+<aside class="cft-sidebar">
+  <div class="sidebar-brand">
+    <div class="brand">CFT<span>.</span></div>
+    <div class="sidebar-subtitle">CRYPTO & FINANCIAL TERMINAL</div>
+  </div>
+
+  <div class="sidebar-label">MAIN MENU</div>
+
+  <nav class="sidebar-nav">
+    <a class="active" href="#overview">
+      <span class="nav-icon">⌂</span>
+      <span>OVERVIEW</span>
+    </a>
+    <a href="#global-economy">
+      <span class="nav-icon">◎</span>
+      <span>GLOBAL ECONOMY</span>
+    </a>
+    <a href="#crypto-market">
+      <span class="nav-icon">₿</span>
+      <span>CRYPTO MARKET</span>
+    </a>
+    <a href="#live-charts">
+      <span class="nav-icon">▥</span>
+      <span>LIVE CHARTS</span>
+    </a>
+    <a href="#crypto-news">
+      <span class="nav-icon">▤</span>
+      <span>CRYPTO NEWS</span>
+    </a>
+    <a href="#intelligence">
+      <span class="nav-icon">◈</span>
+      <span>INTELLIGENCE</span>
+    </a>
+    <a href="#economic-calendar">
+      <span class="nav-icon">▦</span>
+      <span>ECONOMIC CALENDAR</span>
+    </a>
+    <a href="#watchlist">
+      <span class="nav-icon">☆</span>
+      <span>WATCHLIST</span>
+    </a>
+    <a href="#alerts">
+      <span class="nav-icon">♢</span>
+      <span>ALERTS</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    GLOBAL MARKETS<br>
+    REAL-TIME INTELLIGENCE
+  </div>
+</aside>
+
+<header class="cft-topbar">
+  <div class="status">● MARKET TERMINAL</div>
+  <div class="topbar-label">GLOBAL FINANCIAL INTELLIGENCE</div>
+</header>
+
+<main>
+  <div class="eyebrow">GLOBAL FINANCIAL INTELLIGENCE</div>
+  <h1>Market Overview</h1>
+  <p class="subtitle">
+    Monitor global financial markets and digital assets.
+  </p>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="metric-label">GLOBAL MARKET STATUS</div>
+      <div class="metric-value">ACTIVE</div>
+      <div class="subtitle">Market monitoring</div>
+    </div>
+    <div class="panel">
+      <div class="metric-label">BITCOIN</div>
+      <div class="metric-value" id="btc-price">$--</div>
+      <div class="subtitle">BTC / USD</div>
+    </div>
+    <div class="panel">
+      <div class="metric-label">ETHEREUM</div>
+      <div class="metric-value" id="eth-price">$--</div>
+      <div class="subtitle">ETH / USD</div>
+    </div>
+    <div class="panel">
+      <div class="metric-label">MARKET SENTIMENT</div>
+      <div class="metric-value">--</div>
+      <div class="subtitle">Awaiting market data</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Crypto Market Watch</h2>
+  <div class="panel table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ASSET</th>
+          <th>PRICE (USD)</th>
+          <th>24H CHANGE</th>
+          <th>MARKET CAP</th>
+          <th>VOLUME (24H)</th>
+        </tr>
+      </thead>
+      
+<tbody id="crypto-market-body">
+  <tr>
+    <td colspan="5">Loading top 100 cryptocurrency data...</td>
+  </tr>
+</tbody>
+
+    </table>
+  </div>
+
+  
+    
+<section id="cft-dex-scanner" class="cft-scanner">
+
+  <div class="scanner-heading">
+    <div>
+      <span class="scanner-eyebrow">MULTICHAIN INTELLIGENCE</span>
+      <h2>DEX Market Scanner</h2>
+      <p>Discover new tokens and monitor decentralized markets.</p>
+    </div>
+    <span id="dex-status" class="scanner-status">CONNECTING...</span>
+  </div>
+
+  <div class="scanner-controls">
+    <input
+      type="search"
+      id="dex-search"
+      placeholder="Search token, symbol or contract..."
+    >
+
+    <select id="dex-chain">
+      <option value="all">All Networks</option>
+      <option value="solana">Solana</option>
+      <option value="eth">Ethereum</option>
+      <option value="bsc">BNB Chain</option>
+      <option value="base">Base</option>
+      <option value="arbitrum">Arbitrum</option>
+      <option value="optimism">Optimism</option>
+      <option value="polygon_pos">Polygon</option>
+      <option value="avax">Avalanche</option>
+    </select>
+
+    <select id="dex-timeframe" aria-label="Market timeframe">
+      <option value="24h">24H</option>
+      <option value="4h">4H</option>
+      <option value="1h">1H</option>
+      <option value="30m">30M</option>
+      <option value="15m">15M</option>
+      <option value="5m">5M</option>
+      <option value="1m">1M</option>
+    </select>
+
+    <button id="dex-refresh" type="button">Refresh</button>
+  </div>
+
+  <div class="dex-market-section">
+    <h3>01. New Pairs</h3>
+    <p class="dex-description">Recently discovered trading pools.</p>
+    <div class="scanner-table-wrap">
+      <table class="scanner-table">
+        <thead>
+          <tr>
+            <th>TOKEN</th>
+            <th>NETWORK</th>
+            <th>PRICE</th>
+            <th>24H CHANGE</th>
+            <th>MARKET CAP</th>
+            <th>LIQUIDITY</th>
+            <th>VOLUME 24H</th>
+          </tr>
+        </thead>
+        <tbody id="dex-new-body">
+          <tr><td colspan="7">Loading new pairs...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <button id="dex-load-more" class="dex-load-more" type="button">
+      Load More Pairs
+    </button>
+  </div>
+
+  <div class="dex-market-section">
+    <h3>02. Trending Tokens</h3>
+    <p class="dex-description">Pools currently ranked as trending.</p>
+    <div class="scanner-table-wrap">
+      <table class="scanner-table">
+        <thead>
+          <tr>
+            <th>TOKEN</th>
+            <th>NETWORK</th>
+            <th>PRICE</th>
+            <th>24H CHANGE</th>
+            <th>MARKET CAP</th>
+            <th>LIQUIDITY</th>
+            <th>VOLUME 24H</th>
+          </tr>
+        </thead>
+        <tbody id="dex-trending-body">
+          <tr><td colspan="7">Loading trending pools...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="dex-market-section">
+    <h3>03. Top Gainers</h3>
+    <p class="dex-description">Highest positive 24-hour price changes among loaded pools.</p>
+    <div class="scanner-table-wrap">
+      <table class="scanner-table">
+        <thead>
+          <tr>
+            <th>TOKEN</th>
+            <th>NETWORK</th>
+            <th>PRICE</th>
+            <th>24H CHANGE</th>
+            <th>MARKET CAP</th>
+            <th>LIQUIDITY</th>
+            <th>VOLUME 24H</th>
+          </tr>
+        </thead>
+        <tbody id="dex-gainers-body">
+          <tr><td colspan="7">Loading gainers...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="dex-market-section">
+    <h3>04. Top Losers</h3>
+    <p class="dex-description">Largest negative 24-hour price changes among loaded pools.</p>
+    <div class="scanner-table-wrap">
+      <table class="scanner-table">
+        <thead>
+          <tr>
+            <th>TOKEN</th>
+            <th>NETWORK</th>
+            <th>PRICE</th>
+            <th>24H CHANGE</th>
+            <th>MARKET CAP</th>
+            <th>LIQUIDITY</th>
+            <th>VOLUME 24H</th>
+          </tr>
+        </thead>
+        <tbody id="dex-losers-body">
+          <tr><td colspan="7">Loading losers...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <p id="dex-count" class="scanner-footer">
+    Waiting for market data...
+  </p>
+
+</section>
+
+    
+<h2 class="section-title">Latest Financial Intelligence</h2>
+  <div class="news-grid">
+    <div class="panel news-card">
+      <div class="news-category">GLOBAL ECONOMY</div>
+      <h3>Global Economic Developments</h3>
+      <p>Economic news and macro market updates will appear here.</p>
+    </div>
+    <div class="panel news-card">
+      <div class="news-category">CRYPTOCURRENCY</div>
+      <h3>Digital Asset Market Updates</h3>
+      <p>Latest cryptocurrency news and market developments.</p>
+    </div>
+    <div class="panel news-card">
+      <div class="news-category">MARKET INTELLIGENCE</div>
+      <h3>Institutional Market Insights</h3>
+      <p>Market analysis and important financial indicators.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  CFT — CRYPTO & FINANCIAL TERMINAL
+  <br><br>
+  Global Markets. Real-Time Intelligence.
+  <br><br>
+  Market data integration is under development.
+</footer>
+
+
+<script>
+const assets = [
+  {symbol:"BTCUSDT", prefix:"btc"},
+  {symbol:"ETHUSDT", prefix:"eth"},
+  {symbol:"SOLUSDT", prefix:"sol"}
+];
+
+function formatPrice(value) {
+  return "$" + Number(value).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+function formatVolume(value) {
+  return "$" + Number(value).toLocaleString("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 2
+  });
+}
+
+async function updateMarket() {
+  const status = document.querySelector(".status");
+
+  try {
+    const response = await fetch(
+      "https://api.binance.com/api/v3/ticker/24hr?symbols=%5B%22BTCUSDT%22%2C%22ETHUSDT%22%2C%22SOLUSDT%22%5D"
+    );
+
+    if (!response.ok) {
+      throw new Error("Market API unavailable: " + response.status);
+    }
+
+    const data = await response.json();
+
+    assets.forEach(asset => {
+      const coin = data.find(
+        item => item.symbol === asset.symbol
+      );
+
+      if (!coin) return;
+
+      const prefix = asset.prefix;
+      const price = formatPrice(coin.lastPrice);
+      const change = Number(coin.priceChangePercent);
+      const changeText =
+        (change > 0 ? "+" : "") + change.toFixed(2) + "%";
+      const volume = formatVolume(coin.quoteVolume);
+
+      const card = document.getElementById(prefix + "-price");
+      if (card) card.textContent = price;
+
+      const tablePrice = document.getElementById(
+        prefix + "-table-price"
+      );
+      if (tablePrice) tablePrice.textContent = price;
+
+      const changeElement = document.getElementById(
+        prefix + "-change"
+      );
+
+      if (changeElement) {
+        changeElement.textContent = changeText;
+        changeElement.className = change >= 0 ? "up" : "down";
+      }
+
+      const volumeElement = document.getElementById(
+        prefix + "-volume"
+      );
+
+      if (volumeElement) {
+        volumeElement.textContent = volume;
+      }
+    });
+
+    if (status) {
+      status.textContent = "● LIVE MARKET DATA";
+      status.style.color = "#16c784";
+    }
+
+  } catch (error) {
+    console.error("CFT market update error:", error);
+
+    if (status) {
+      status.textContent = "● MARKET DATA UNAVAILABLE";
+      status.style.color = "#ea3943";
+    }
+  }
+}
+
+updateMarket();
+setInterval(updateMarket, 30000);
+</script>
+
+
+<script>
+async function updateCoinDetails() {
+  const coins = [
+    {id:"bitcoin", prefix:"btc"},
+    {id:"ethereum", prefix:"eth"},
+    {id:"solana", prefix:"sol"}
+  ];
+
+  try {
+    const url =
+      "https://api.coingecko.com/api/v3/coins/markets" +
+      "?vs_currency=usd&ids=bitcoin%2Cethereum%2Csolana" +
+      "&order=market_cap_desc&per_page=3&page=1";
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("CoinGecko API error: " + response.status);
+    }
+
+    const data = await response.json();
+
+    coins.forEach(item => {
+      const coin = data.find(c => c.id === item.id);
+      if (!coin) return;
+
+      const logo = document.getElementById(item.prefix + "-logo");
+      const cap = document.getElementById(
+        item.prefix + "-marketcap"
+      );
+
+      if (logo) {
+        logo.src = coin.image;
+      }
+
+      if (cap) {
+        cap.textContent = "$" +
+          Number(coin.market_cap).toLocaleString("en-US", {
+            notation:"compact",
+            maximumFractionDigits:2
+          });
+      }
+    });
+
+    console.log("CFT coin logos and market caps updated.");
+
+  } catch(error) {
+    console.error("Coin details error:", error);
+  }
+}
+
+updateCoinDetails();
+setInterval(updateCoinDetails, 60000);
+</script>
+
+
+<script>
+async function loadTop100Crypto() {
+  const tbody = document.getElementById("crypto-market-body");
+
+  if (!tbody) return;
+
+  try {
+    const url =
+      "https://api.coingecko.com/api/v3/coins/markets" +
+      "?vs_currency=usd" +
+      "&order=market_cap_desc" +
+      "&per_page=100" +
+      "&page=1" +
+      "&sparkline=false";
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("CoinGecko API error: " + response.status);
+    }
+
+    const coins = await response.json();
+
+    if (!Array.isArray(coins) || coins.length === 0) {
+      throw new Error("No cryptocurrency data received.");
+    }
+
+    const oldIds = {
+      bitcoin: "btc",
+      ethereum: "eth",
+      solana: "sol"
+    };
+
+    const fragment = document.createDocumentFragment();
+
+    coins.forEach((coin, index) => {
+      const prefix = oldIds[coin.id] || "top100-" + coin.id;
+      const row = document.createElement("tr");
+
+      const asset = document.createElement("td");
+      asset.className = "asset-cell";
+
+      const logo = document.createElement("img");
+      logo.className = "asset-logo";
+      logo.src = coin.image || "";
+      logo.alt = coin.name + " logo";
+      logo.loading = "lazy";
+
+      const name = document.createElement("span");
+      name.className = "asset-name";
+      name.textContent = coin.name;
+
+      const symbol = document.createElement("span");
+      symbol.className = "symbol";
+      symbol.textContent = (coin.symbol || "").toUpperCase();
+
+      asset.appendChild(logo);
+      asset.appendChild(name);
+      asset.appendChild(symbol);
+
+      const price = document.createElement("td");
+      price.textContent = "$" + Number(coin.current_price || 0)
+        .toLocaleString("en-US", {maximumFractionDigits: 8});
+
+      const change = document.createElement("td");
+      const changeValue = Number(coin.price_change_percentage_24h || 0);
+      change.textContent = (changeValue >= 0 ? "+" : "") +
+        changeValue.toFixed(2) + "%";
+      change.className = changeValue >= 0 ? "up" : "down";
+
+      const marketCap = document.createElement("td");
+      marketCap.textContent = "$" +
+        Number(coin.market_cap || 0).toLocaleString("en-US", {
+          notation: "compact",
+          maximumFractionDigits: 2
+        });
+
+      const volume = document.createElement("td");
+      volume.textContent = "$" +
+        Number(coin.total_volume || 0).toLocaleString("en-US", {
+          notation: "compact",
+          maximumFractionDigits: 2
+        });
+
+      // Preserve IDs used by the existing BTC, ETH and SOL integration.
+      if (oldIds[coin.id]) {
+        logo.id = prefix + "-logo";
+        price.id = prefix + "-table-price";
+        change.id = prefix + "-change";
+        marketCap.id = prefix + "-marketcap";
+        volume.id = prefix + "-volume";
+      }
+
+      row.appendChild(asset);
+      row.appendChild(price);
+      row.appendChild(change);
+      row.appendChild(marketCap);
+      row.appendChild(volume);
+
+      fragment.appendChild(row);
+    });
+
+    tbody.replaceChildren(fragment);
+
+    console.log("CFT Top 100 loaded:", coins.length, "coins.");
+
+    const status = document.getElementById("market-status");
+    if (status) {
+      status.textContent = "TOP 100 MARKET DATA";
+    }
+
+  } catch (error) {
+    console.error("Top 100 loading error:", error);
+
+    tbody.innerHTML =
+      '<tr><td colspan="5">Market data unavailable. Please try again later.</td></tr>';
+  }
+}
+
+loadTop100Crypto();
+setInterval(loadTop100Crypto, 60000);
+</script>
+
+
+
+<script>
+
+(function () {
+  const API = "https://api.geckoterminal.com/api/v2";
+  const headers = {
+    "Accept": "application/json;version=20230302"
+  };
+
+  const newBody = document.getElementById("dex-new-body");
+  const trendingBody = document.getElementById("dex-trending-body");
+  const gainersBody = document.getElementById("dex-gainers-body");
+  const losersBody = document.getElementById("dex-losers-body");
+
+  const status = document.getElementById("dex-status");
+  const count = document.getElementById("dex-count");
+  const search = document.getElementById("dex-search");
+  const chainSelect = document.getElementById("dex-chain");
+  const timeframeSelect = document.getElementById("dex-timeframe");
+  const refreshButton = document.getElementById("dex-refresh");
+  const loadMoreButton = document.getElementById("dex-load-more");
+
+  if (!newBody || !trendingBody || !gainersBody ||
+      !losersBody || !timeframeSelect) return;
+
+  let newPools = [];
+  let trendingPools = [];
+  let currentPage = 1;
+  let isLoadingMore = false;
+  let timeframeJobId = 0;
+  let lastOhlcvRequestAt = 0;
+
+  const timeframeChanges = new Map();
+
+  const CACHE_STORAGE_KEY = "cft_timeframe_cache_v1";
+
+  function loadPersistentCache() {
+    try {
+      const saved = localStorage.getItem(CACHE_STORAGE_KEY);
+      const entries = saved ? JSON.parse(saved) : [];
+
+      return new Map(
+        Array.isArray(entries) ? entries : []
+      );
+    } catch (error) {
+      console.warn("Persistent cache unavailable:", error);
+      return new Map();
+    }
+  }
+
+  const timeframeCache = loadPersistentCache();
+
+  function savePersistentCache() {
+    try {
+      const entries = Array.from(timeframeCache.entries()).slice(-300);
+
+      localStorage.setItem(
+        CACHE_STORAGE_KEY,
+        JSON.stringify(entries)
+      );
+    } catch (error) {
+      console.warn("Could not save persistent cache:", error);
+    }
+  }
+
+  const CACHE_TTL = 600000;
+  const REQUEST_GAP = 8000;
+
+  const timeframeConfig = {
+    "24h": { period: "day", aggregate: 1, limit: 1, required: 1 },
+    "4h":  { period: "hour", aggregate: 4, limit: 1, required: 1 },
+    "1h":  { period: "hour", aggregate: 1, limit: 1, required: 1 },
+    "30m": { period: "minute", aggregate: 15, limit: 2, required: 2 },
+    "15m": { period: "minute", aggregate: 15, limit: 1, required: 1 },
+    "5m":  { period: "minute", aggregate: 5, limit: 1, required: 1 },
+    "1m":  { period: "minute", aggregate: 1, limit: 1, required: 1 }
+  };
+
+  const networkNames = {
+    solana: "Solana",
+    eth: "Ethereum",
+    bsc: "BNB Chain",
+    base: "Base",
+    arbitrum: "Arbitrum",
+    optimism: "Optimism",
+    polygon_pos: "Polygon",
+    avax: "Avalanche"
+  };
+
+  function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function getJSON(url) {
+    const response = await fetch(url, { headers });
+
+    if (!response.ok) {
+      throw new Error("API HTTP " + response.status);
+    }
+
+    return await response.json();
+  }
+
+  function compactUSD(value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return "--";
+
+    return "$" + number.toLocaleString("en-US", {
+      notation: "compact",
+      maximumFractionDigits: 2
+    });
+  }
+
+  function formatPrice(value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return "--";
+
+    return "$" + number.toLocaleString("en-US", {
+      maximumSignificantDigits: 7
+    });
+  }
+
+  function getNetworkId(pool) {
+    return pool.relationships?.network?.data?.id || "";
+  }
+
+  function normalisePools(response) {
+    const included = response.included || [];
+
+    return (response.data || []).map(pool => {
+      const baseId = pool.relationships?.base_token?.data?.id;
+
+      const token = included.find(item =>
+        item.type === "token" && item.id === baseId
+      );
+
+      const networkId = getNetworkId(pool);
+
+      const network = included.find(item =>
+        item.type === "network" && item.id === networkId
+      );
+
+      return {
+        ...pool,
+        networkId,
+        networkName:
+          network?.attributes?.name ||
+          networkNames[networkId] ||
+          networkId ||
+          "Unknown",
+        token: token?.attributes || {}
+      };
+    });
+  }
+
+  function uniquePools(items) {
+    const seen = new Set();
+
+    return items.filter(pool => {
+      const key = pool.id || pool.attributes?.address;
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function getFiltered(items) {
+    const query = (search.value || "").trim().toLowerCase();
+    const selectedNetwork = chainSelect.value;
+
+    return items.filter(pool => {
+      const a = pool.attributes || {};
+      const t = pool.token || {};
+
+      const name = (t.name || a.name || "").toLowerCase();
+      const symbol = (t.symbol || "").toLowerCase();
+      const address = (t.address || a.address || "").toLowerCase();
+
+      const matchesQuery =
+        !query || name.includes(query) ||
+        symbol.includes(query) || address.includes(query);
+
+      const matchesNetwork =
+        selectedNetwork === "all" ||
+        pool.networkId === selectedNetwork;
+
+      return matchesQuery && matchesNetwork;
+    });
+  }
+
+  function poolKey(pool) {
+    return (pool.networkId || "") + ":" +
+      (pool.attributes?.address || "");
+  }
+
+  function makeCell(value) {
+    const cell = document.createElement("td");
+    cell.textContent = value;
+    return cell;
+  }
+
+  function renderTable(target, items, emptyMessage, useTimeframe) {
+    target.replaceChildren();
+
+    if (!items.length) {
+      const row = document.createElement("tr");
+      const cell = makeCell(emptyMessage);
+      cell.colSpan = 7;
+      row.appendChild(cell);
+      target.appendChild(row);
+      return;
+    }
+
+    items.forEach(pool => {
+      const a = pool.attributes || {};
+      const t = pool.token || {};
+      const row = document.createElement("tr");
+      const tokenCell = document.createElement("td");
+
+      const logoUrl = t.image_url;
+      const symbolText = (t.symbol || "?").toUpperCase();
+
+      if (logoUrl) {
+        const logo = document.createElement("img");
+        logo.className = "scanner-token-logo";
+        logo.src = logoUrl;
+        logo.alt = (t.name || "Token") + " logo";
+        logo.loading = "lazy";
+
+        const fallback = document.createElement("span");
+        fallback.className = "scanner-logo-fallback";
+        fallback.textContent = symbolText.slice(0, 2);
+        fallback.style.display = "none";
+
+        logo.onerror = () => {
+          logo.style.display = "none";
+          fallback.style.display = "inline-flex";
+        };
+
+        tokenCell.appendChild(logo);
+        tokenCell.appendChild(fallback);
+      } else {
+        const fallback = document.createElement("span");
+        fallback.className = "scanner-logo-fallback";
+        fallback.textContent = symbolText.slice(0, 2);
+        tokenCell.appendChild(fallback);
+      }
+
+      const name = document.createElement("span");
+      name.className = "scanner-pair-name";
+      name.textContent = t.name || a.name || "Unknown Token";
+      tokenCell.appendChild(name);
+
+      const symbol = document.createElement("span");
+      symbol.className = "scanner-subtext";
+      symbol.textContent = symbolText;
+      tokenCell.appendChild(symbol);
+
+      row.appendChild(tokenCell);
+      row.appendChild(makeCell(pool.networkName));
+      row.appendChild(makeCell(formatPrice(a.base_token_price_usd)));
+
+      const rawChangeValue = useTimeframe
+        ? timeframeChanges.get(poolKey(pool))
+        : a.price_change_percentage?.h24;
+
+      const changeValue =
+        rawChangeValue === null ||
+        rawChangeValue === undefined ||
+        rawChangeValue === ""
+          ? NaN
+          : Number(rawChangeValue);
+
+      const changeCell = document.createElement("td");
+
+      if (Number.isFinite(changeValue)) {
+        changeCell.textContent =
+          (changeValue >= 0 ? "+" : "") +
+          changeValue.toFixed(2) + "%";
+
+        changeCell.className =
+          changeValue >= 0
+            ? "scanner-change-up"
+            : "scanner-change-down";
+      } else {
+        changeCell.textContent = "--";
+      }
+
+      row.appendChild(changeCell);
+      row.appendChild(makeCell(compactUSD(a.market_cap_usd)));
+      row.appendChild(makeCell(compactUSD(a.reserve_in_usd)));
+      row.appendChild(makeCell(compactUSD(a.volume_usd?.h24)));
+
+      target.appendChild(row);
+    });
+  }
+
+  function updateTimeframeHeaders() {
+    const label = timeframeSelect.value.toUpperCase();
+
+    [gainersBody, losersBody].forEach(body => {
+      const header = body.closest("table")
+        ?.querySelector("thead th:nth-child(4)");
+
+      if (header) header.textContent = label + " CHANGE";
+    });
+  }
+
+  function renderAll() {
+    const filteredNew = getFiltered(newPools);
+    const filteredTrending = getFiltered(trendingPools);
+
+    const combined = uniquePools([
+      ...newPools,
+      ...trendingPools
+    ]);
+
+    const filteredCombined = getFiltered(combined);
+
+    const ranked = filteredCombined.filter(pool =>
+      typeof timeframeChanges.get(poolKey(pool)) === "number"
+    );
+
+    const gainers = ranked
+      .filter(pool => timeframeChanges.get(poolKey(pool)) > 0)
+      .sort((a, b) =>
+        timeframeChanges.get(poolKey(b)) -
+        timeframeChanges.get(poolKey(a))
+      )
+      .slice(0, 10);
+
+    const losers = ranked
+      .filter(pool => timeframeChanges.get(poolKey(pool)) < 0)
+      .sort((a, b) =>
+        timeframeChanges.get(poolKey(a)) -
+        timeframeChanges.get(poolKey(b))
+      )
+      .slice(0, 10);
+
+    const tf = timeframeSelect.value.toUpperCase();
+
+    renderTable(newBody, filteredNew, "No new pairs found.", false);
+    renderTable(trendingBody, filteredTrending, "No trending pools found.", false);
+
+    renderTable(
+      gainersBody,
+      gainers,
+      "Waiting for " + tf + " candle data...",
+      true
+    );
+
+    renderTable(
+      losersBody,
+      losers,
+      "Waiting for " + tf + " candle data...",
+      true
+    );
+
+    updateTimeframeHeaders();
+
+    count.textContent =
+      "New pools: " + newPools.length +
+      " | Trending pools: " + trendingPools.length +
+      " | Unique pools: " + combined.length +
+      " | Ranking candidates: up to 10 highest-volume pools" +
+      " | Timeframe: " + tf;
+  }
+
+  async function loadNewPage(page, append) {
+    const url = API + "/networks/new_pools" +
+      "?include=base_token,network&page=" + page;
+
+    const response = await getJSON(url);
+    const received = normalisePools(response);
+
+    newPools = append
+      ? uniquePools([...newPools, ...received])
+      : received;
+
+    currentPage = page;
+  }
+
+  async function loadTrending() {
+    const url = API + "/networks/trending_pools" +
+      "?include=base_token,network&page=1";
+
+    const response = await getJSON(url);
+    trendingPools = normalisePools(response);
+  }
+
+  async function fetchTimeframeChange(pool, tf) {
+    const config = timeframeConfig[tf];
+    const address = pool.attributes?.address;
+
+    if (!config || !address || !pool.networkId) return null;
+
+    const url = API +
+      "/networks/" + encodeURIComponent(pool.networkId) +
+      "/pools/" + encodeURIComponent(address) +
+      "/ohlcv/" + config.period +
+      "?aggregate=" + config.aggregate +
+      "&limit=" + config.limit +
+      "&currency=usd&token=base";
+
+    const response = await getJSON(url);
+    const candles =
+      response.data?.attributes?.ohlcv_list || [];
+
+    if (candles.length < config.required) return null;
+
+    const sorted = candles.slice().sort((a, b) =>
+      Number(a[0]) - Number(b[0])
+    );
+
+    const first = sorted[0];
+    const last = sorted[sorted.length - 1];
+
+    const open = Number(first[1]);
+    const close = Number(last[4]);
+
+    if (!Number.isFinite(open) ||
+        !Number.isFinite(close) || open <= 0) {
+      return null;
+    }
+
+    return ((close - open) / open) * 100;
+  }
+
+  async function loadTimeframeData() {
+    const jobId = ++timeframeJobId;
+    const tf = timeframeSelect.value;
+
+    timeframeChanges.clear();
+
+    const candidates = getFiltered(
+      uniquePools([...newPools, ...trendingPools])
+    )
+      .filter(pool =>
+        pool.networkId && pool.attributes?.address
+      )
+      .sort((a, b) =>
+        Number(b.attributes?.volume_usd?.h24 || 0) -
+        Number(a.attributes?.volume_usd?.h24 || 0)
+      )
+      .slice(0, 30);
+
+    if (!candidates.length) {
+      renderAll();
+      status.textContent = "NO CANDIDATE POOLS";
+      return;
+    }
+
+    // Use existing GeckoTerminal 24H price-change data.
+    // No additional OHLCV requests are needed for 24H.
+    if (tf === "24h") {
+      for (const pool of candidates) {
+        const rawValue =
+          pool.attributes?.price_change_percentage?.h24;
+
+        const value =
+          rawValue === null ||
+          rawValue === undefined ||
+          rawValue === ""
+            ? NaN
+            : Number(rawValue);
+
+        if (Number.isFinite(value)) {
+          timeframeChanges.set(poolKey(pool), value);
+        }
+      }
+
+      renderAll();
+
+      status.textContent = "LIVE MULTICHAIN DATA";
+
+      count.textContent +=
+        " | 24H data processed: " +
+        timeframeChanges.size + "/" + candidates.length;
+
+      return;
+    }
+
+    renderAll();
+
+    status.textContent = "CALCULATING " + tf.toUpperCase() + "...";
+
+    let completed = 0;
+    let rateLimited = false;
+
+    for (const pool of candidates) {
+      if (jobId !== timeframeJobId) return;
+
+      const key = poolKey(pool);
+      const cached = timeframeCache.get(tf + ":" + key);
+
+      if (cached && Date.now() - cached.time < CACHE_TTL) {
+        timeframeChanges.set(key, cached.value);
+        completed++;
+        renderAll();
+        continue;
+      }
+
+      const delay = REQUEST_GAP -
+        (Date.now() - lastOhlcvRequestAt);
+
+      if (lastOhlcvRequestAt && delay > 0) {
+        await wait(delay);
+      }
+
+      if (jobId !== timeframeJobId) return;
+
+      lastOhlcvRequestAt = Date.now();
+
+      try {
+        const value = await fetchTimeframeChange(pool, tf);
+
+        timeframeChanges.set(key, value);
+
+        timeframeCache.set(tf + ":" + key, {
+          value,
+          time: Date.now()
+        });
+
+        savePersistentCache();
+
+      } catch (error) {
+        console.error("Candle data error:", error);
+
+        timeframeChanges.set(key, null);
+
+        if (String(error.message).includes("429")) {
+          rateLimited = true;
+          break;
+        }
+      }
+
+      completed++;
+      renderAll();
+    }
+
+    if (jobId !== timeframeJobId) return;
+
+    status.textContent = rateLimited
+      ? "API RATE LIMITED - RETRY LATER"
+      : "LIVE MULTICHAIN DATA";
+
+    count.textContent +=
+      " | Candle data processed: " + completed +
+      "/" + candidates.length;
+  }
+
+  async function loadInitialData() {
+    status.textContent = "UPDATING...";
+    refreshButton.disabled = true;
+
+    try {
+      const results = await Promise.allSettled([
+        loadNewPage(1, false),
+        loadTrending()
+      ]);
+
+      const newSuccess = results[0].status === "fulfilled";
+      const trendingSuccess = results[1].status === "fulfilled";
+
+      if (!newSuccess && !trendingSuccess) {
+        throw new Error("Both market data sources failed.");
+      }
+
+      renderAll();
+
+      loadMoreButton.disabled = !newSuccess;
+      loadMoreButton.textContent = "Load More Pairs";
+
+      if (!newSuccess || !trendingSuccess) {
+        status.textContent = "PARTIAL MARKET DATA";
+      }
+
+      loadTimeframeData();
+
+    } catch (error) {
+      console.error("CFT market error:", error);
+      status.textContent = "DATA UNAVAILABLE";
+      count.textContent = "Unable to load market data. Please retry.";
+    }
+
+    refreshButton.disabled = false;
+  }
+
+  async function loadMore() {
+    if (isLoadingMore || currentPage >= 10) return;
+
+    isLoadingMore = true;
+    loadMoreButton.disabled = true;
+    loadMoreButton.textContent = "Loading...";
+
+    try {
+      await loadNewPage(currentPage + 1, true);
+      renderAll();
+      loadTimeframeData();
+    } catch (error) {
+      console.error("Pagination error:", error);
+      count.textContent += " | Could not load the next page.";
+    }
+
+    isLoadingMore = false;
+    loadMoreButton.disabled = currentPage >= 10;
+    loadMoreButton.textContent =
+      currentPage >= 10
+        ? "Free API Page Limit Reached"
+        : "Load More Pairs";
+  }
+
+  search.addEventListener("input", renderAll);
+  search.addEventListener("change", loadTimeframeData);
+
+  chainSelect.addEventListener("change", () => {
+    renderAll();
+    loadTimeframeData();
+  });
+
+  timeframeSelect.addEventListener("change", loadTimeframeData);
+  refreshButton.addEventListener("click", loadInitialData);
+  loadMoreButton.addEventListener("click", loadMore);
+
+  loadInitialData();
+
+  setInterval(loadInitialData, 120000);
+})();
+
+</script>
+
+
+</body>
+</html>
