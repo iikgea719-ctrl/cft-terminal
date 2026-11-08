@@ -269,7 +269,7 @@ footer {
       .scanner-controls select,
       .scanner-controls button { width: 100%; }
     }
-    
+
 
 .scanner-token-logo {
   width:25px;
@@ -610,6 +610,150 @@ td {
 }
 
 \n</style>
+<style>
+/* CFT AXIOM-INSPIRED TERMINAL TOOLBAR */
+
+#cft-market-toolbar {
+  position: relative;
+  background: #000000;
+  border-bottom: 1px solid #303030;
+  margin: 0 0 22px;
+  padding: 12px 0 0;
+}
+
+.cft-toolbar-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cft-mode-switch {
+  display: flex;
+  gap: 3px;
+  border-right: 1px solid #333333;
+  padding-right: 10px;
+}
+
+.cft-mode {
+  background: transparent;
+  color: #999999;
+  border: 1px solid transparent;
+  padding: 9px 13px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cft-mode.active {
+  color: #16c784;
+  border-bottom: 2px solid #16c784;
+}
+
+#cft-market-toolbar .scanner-controls {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 8px;
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+#cft-market-toolbar input,
+#cft-market-toolbar select,
+#cft-market-toolbar button:not(.cft-mode) {
+  background: #000000;
+  color: #eeeeee;
+  border: 1px solid #333333;
+  border-radius: 2px;
+  min-height: 34px;
+  padding: 6px 9px;
+}
+
+#cft-market-toolbar input {
+  flex: 1;
+  min-width: 130px;
+}
+
+#cft-market-toolbar .cft-market-tabs {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 13px 4px;
+  margin-top: 9px;
+  border-top: 1px solid #222222;
+}
+
+.cft-market-tabs a {
+  color: #999999;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.cft-market-tabs a:hover,
+.cft-market-tabs a.active {
+  color: #16c784;
+}
+
+#cft-cex-content,
+#cft-cex-heading,
+#cft-dex-scanner {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#cft-dex-scanner .dex-market-section,
+#cft-dex-scanner .scanner-table-wrap,
+#cft-dex-scanner .scanner-heading,
+#cft-dex-scanner .scanner-table {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#cft-dex-scanner .dex-market-section {
+  border-bottom: 1px solid #292929 !important;
+  padding: 14px 0 !important;
+  margin: 0 0 12px !important;
+}
+
+#cft-dex-scanner .scanner-table th,
+#cft-dex-scanner .scanner-table td {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid #222222 !important;
+  border-radius: 0 !important;
+}
+
+#cft-dex-scanner .scanner-table th {
+  color: #888888;
+}
+
+#cft-dex-scanner .scanner-table tr:hover td {
+  background: #080808 !important;
+}
+
+@media (max-width: 800px) {
+  #cft-market-toolbar .scanner-controls {
+    width: 100%;
+  }
+
+  #cft-market-toolbar .cft-market-tabs {
+    gap: 18px;
+  }
+
+  .cft-toolbar-main {
+    gap: 7px;
+  }
+}
+
+
+</style>
 </head>
 <body>
 
@@ -701,8 +845,49 @@ td {
     </div>
   </div>
 
-  <h2 class="section-title">Crypto Market Watch</h2>
-  <div class="panel table-wrap">
+
+<div id="cft-market-toolbar">
+  <div class="cft-toolbar-main">
+    <div class="cft-mode-switch">
+      <button type="button" class="cft-mode active" data-mode="cex">CEX</button>
+      <button type="button" class="cft-mode" data-mode="dex">DEX</button>
+    </div>
+    <div class="scanner-controls">
+      <input type="search" id="dex-search" placeholder="Search token, symbol or contract...">
+      <select id="dex-chain">
+        <option value="all">All Chains</option>
+        <option value="solana">Solana</option>
+        <option value="eth">Ethereum</option>
+        <option value="bsc">BNB Chain</option>
+        <option value="base">Base</option>
+        <option value="arbitrum">Arbitrum</option>
+        <option value="optimism">Optimism</option>
+        <option value="polygon">Polygon</option>
+        <option value="avax">Avalanche</option>
+      </select>
+      <select id="dex-timeframe">
+        <option value="24h">24H</option>
+        <option value="4h">4H</option>
+        <option value="1h">1H</option>
+        <option value="30m">30M</option>
+        <option value="15m">15M</option>
+        <option value="5m">5M</option>
+        <option value="1m">1M</option>
+      </select>
+      <button id="dex-refresh" type="button">Refresh</button>
+    </div>
+  </div>
+  <nav class="cft-market-tabs">
+    <a href="#dex-trending">Trending</a>
+    <a href="#dex-new-pairs">New Pairs</a>
+    <a href="#dex-gainers">Gainers</a>
+    <a href="#dex-losers">Losers</a>
+  </nav>
+</div>
+
+<h2 id="cft-cex-heading" class="section-title">Crypto Market Watch</h2>
+  <div id="cft-cex-content">
+<div class="panel table-wrap">
     <table>
       <thead>
         <tr>
@@ -713,7 +898,7 @@ td {
           <th>VOLUME (24H)</th>
         </tr>
       </thead>
-      
+
 <tbody id="crypto-market-body">
   <tr>
     <td colspan="5">Loading top 100 cryptocurrency data...</td>
@@ -722,9 +907,10 @@ td {
 
     </table>
   </div>
+</div>
 
-  
-    
+
+
 <section id="cft-dex-scanner" class="cft-scanner">
 
   <div class="scanner-heading">
@@ -768,7 +954,7 @@ td {
     <button id="dex-refresh" type="button">Refresh</button>
   </div>
 
-  <div class="dex-market-section">
+  <div id="dex-new-pairs" class="dex-market-section">
     <h3>01. New Pairs</h3>
     <p class="dex-description">Recently discovered trading pools.</p>
     <div class="scanner-table-wrap">
@@ -794,7 +980,7 @@ td {
     </button>
   </div>
 
-  <div class="dex-market-section">
+  <div id="dex-trending" class="dex-market-section">
     <h3>02. Trending Tokens</h3>
     <p class="dex-description">Pools currently ranked as trending.</p>
     <div class="scanner-table-wrap">
@@ -817,7 +1003,7 @@ td {
     </div>
   </div>
 
-  <div class="dex-market-section">
+  <div id="dex-gainers" class="dex-market-section">
     <h3>03. Top Gainers</h3>
     <p class="dex-description">Highest positive 24-hour price changes among loaded pools.</p>
     <div class="scanner-table-wrap">
@@ -840,7 +1026,7 @@ td {
     </div>
   </div>
 
-  <div class="dex-market-section">
+  <div id="dex-losers" class="dex-market-section">
     <h3>04. Top Losers</h3>
     <p class="dex-description">Largest negative 24-hour price changes among loaded pools.</p>
     <div class="scanner-table-wrap">
@@ -869,7 +1055,7 @@ td {
 
 </section>
 
-    
+
 <h2 class="section-title">Latest Financial Intelligence</h2>
   <div class="news-grid">
     <div class="panel news-card">
@@ -1805,6 +1991,42 @@ setInterval(loadTop100Crypto, 60000);
 
 </script>
 
+
+
+<script>
+(function () {
+  const cexHeading = document.getElementById("cft-cex-heading");
+  const cexContent = document.getElementById("cft-cex-content");
+  const dexScanner = document.getElementById("cft-dex-scanner");
+  const modeButtons = document.querySelectorAll(".cft-mode");
+  const tabs = document.querySelectorAll(".cft-market-tabs a");
+
+  function setMode(mode) {
+    const isCex = mode === "cex";
+    if (cexHeading) cexHeading.hidden = !isCex;
+    if (cexContent) cexContent.hidden = !isCex;
+    if (dexScanner) dexScanner.hidden = isCex;
+
+    modeButtons.forEach(button => {
+      button.classList.toggle("active", button.dataset.mode === mode);
+    });
+  }
+
+  modeButtons.forEach(button => {
+    button.addEventListener("click", () => setMode(button.dataset.mode));
+  });
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      setMode("dex");
+      tabs.forEach(item => item.classList.remove("active"));
+      tab.classList.add("active");
+    });
+  });
+
+  setMode("cex");
+})();
+</script>
 
 </body>
 </html>
