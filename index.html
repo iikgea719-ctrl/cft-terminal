@@ -1172,9 +1172,6 @@ footer {
         </tbody>
       </table>
     </div>
-    <button id="dex-load-more" class="dex-load-more" type="button">
-      Load More Pairs
-    </button>
   </div>
 
   <div id="dex-trending" class="dex-market-section">
@@ -1182,19 +1179,24 @@ footer {
     <p class="dex-description">Pools currently ranked as trending.</p>
     <div class="scanner-table-wrap">
       <table class="scanner-table">
-        <thead>
-          <tr>
-            <th>TOKEN</th>
-            <th>NETWORK</th>
-            <th>PRICE</th>
-            <th>24H CHANGE</th>
-            <th>MARKET CAP</th>
-            <th>LIQUIDITY</th>
-            <th>VOLUME 24H</th>
-          </tr>
-        </thead>
+        
+
+<thead>
+  <tr>
+    <th>TOKEN</th>
+    <th>NETWORK</th>
+    <th>AGE</th>
+    <th>PRICE</th>
+    <th>24H CHANGE</th>
+    <th>TXNS</th>
+    <th>BUYS / SELLS</th>
+    <th>VOLUME 24H</th>
+    <th>LIQUIDITY</th>
+    <th>FDV</th>
+  </tr>
+</thead>
         <tbody id="dex-trending-body">
-          <tr><td colspan="7">Loading trending pools...</td></tr>
+          <tr><td colspan="10">Loading trending pools...</td></tr>
         </tbody>
       </table>
     </div>
@@ -1205,19 +1207,24 @@ footer {
     <p class="dex-description">Highest positive 24-hour price changes among loaded pools.</p>
     <div class="scanner-table-wrap">
       <table class="scanner-table">
-        <thead>
-          <tr>
-            <th>TOKEN</th>
-            <th>NETWORK</th>
-            <th>PRICE</th>
-            <th>24H CHANGE</th>
-            <th>MARKET CAP</th>
-            <th>LIQUIDITY</th>
-            <th>VOLUME 24H</th>
-          </tr>
-        </thead>
+        
+
+<thead>
+  <tr>
+    <th>TOKEN</th>
+    <th>NETWORK</th>
+    <th>AGE</th>
+    <th>PRICE</th>
+    <th>24H CHANGE</th>
+    <th>TXNS</th>
+    <th>BUYS / SELLS</th>
+    <th>VOLUME 24H</th>
+    <th>LIQUIDITY</th>
+    <th>FDV</th>
+  </tr>
+</thead>
         <tbody id="dex-gainers-body">
-          <tr><td colspan="7">Loading gainers...</td></tr>
+          <tr><td colspan="10">Loading gainers...</td></tr>
         </tbody>
       </table>
     </div>
@@ -1228,19 +1235,24 @@ footer {
     <p class="dex-description">Largest negative 24-hour price changes among loaded pools.</p>
     <div class="scanner-table-wrap">
       <table class="scanner-table">
-        <thead>
-          <tr>
-            <th>TOKEN</th>
-            <th>NETWORK</th>
-            <th>PRICE</th>
-            <th>24H CHANGE</th>
-            <th>MARKET CAP</th>
-            <th>LIQUIDITY</th>
-            <th>VOLUME 24H</th>
-          </tr>
-        </thead>
+        
+
+<thead>
+  <tr>
+    <th>TOKEN</th>
+    <th>NETWORK</th>
+    <th>AGE</th>
+    <th>PRICE</th>
+    <th>24H CHANGE</th>
+    <th>TXNS</th>
+    <th>BUYS / SELLS</th>
+    <th>VOLUME 24H</th>
+    <th>LIQUIDITY</th>
+    <th>FDV</th>
+  </tr>
+</thead>
         <tbody id="dex-losers-body">
-          <tr><td colspan="7">Loading losers...</td></tr>
+          <tr><td colspan="10">Loading losers...</td></tr>
         </tbody>
       </table>
     </div>
@@ -1384,26 +1396,53 @@ setInterval(updateMarket, 30000);
 async function loadTop100Crypto() {
   const tbody = document.getElementById("crypto-market-body");
 
-  if (!tbody) return;
+  if (!tbody || window.cftCryptoLoading) return;
+
+  window.cftCryptoLoading = true;
 
   try {
-    const url =
-      "https://api.coingecko.com/api/v3/coins/markets" +
-      "?vs_currency=usd" +
-      "&order=market_cap_desc" +
-      "&per_page=100" +
-      "&page=1" +
-      "&sparkline=false";
+    const allCoins = [];
+    const seenCoins = new Set();
 
-    const response = await fetch(url);
+    for (let page = 1; page <= 4; page++) {
+      const url =
+        "https://api.coingecko.com/api/v3/coins/markets" +
+        "?vs_currency=usd" +
+        "&order=market_cap_desc" +
+        "&per_page=250" +
+        "&page=" + page +
+        "&sparkline=false";
 
-    if (!response.ok) {
-      throw new Error("CoinGecko API error: " + response.status);
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(
+          "CoinGecko API error on page " +
+          page + ": " + response.status
+        );
+      }
+
+      const coins = await response.json();
+
+      if (!Array.isArray(coins)) {
+        throw new Error("Invalid CoinGecko response.");
+      }
+
+      coins.forEach(coin => {
+        if (!seenCoins.has(coin.id)) {
+          seenCoins.add(coin.id);
+          allCoins.push(coin);
+        }
+      });
+
+      if (coins.length < 250) break;
+
+      if (page < 4) {
+        await new Promise(resolve => setTimeout(resolve, 1200));
+      }
     }
 
-    const coins = await response.json();
-
-    if (!Array.isArray(coins) || coins.length === 0) {
+    if (!allCoins.length) {
       throw new Error("No cryptocurrency data received.");
     }
 
@@ -1415,7 +1454,7 @@ async function loadTop100Crypto() {
 
     const fragment = document.createDocumentFragment();
 
-    coins.forEach((coin, index) => {
+    allCoins.forEach(coin => {
       const prefix = oldIds[coin.id] || "top100-" + coin.id;
       const row = document.createElement("tr");
 
@@ -1441,30 +1480,44 @@ async function loadTop100Crypto() {
       asset.appendChild(symbol);
 
       const price = document.createElement("td");
-      price.textContent = "$" + Number(coin.current_price || 0)
-        .toLocaleString("en-US", {maximumFractionDigits: 8});
+      price.textContent = "$" +
+        Number(coin.current_price || 0).toLocaleString(
+          "en-US",
+          {maximumFractionDigits: 8}
+        );
 
       const change = document.createElement("td");
-      const changeValue = Number(coin.price_change_percentage_24h || 0);
-      change.textContent = (changeValue >= 0 ? "+" : "") +
+      const changeValue =
+        Number(coin.price_change_percentage_24h || 0);
+
+      change.textContent =
+        (changeValue >= 0 ? "+" : "") +
         changeValue.toFixed(2) + "%";
-      change.className = changeValue >= 0 ? "up" : "down";
+
+      change.className =
+        changeValue >= 0 ? "up" : "down";
 
       const marketCap = document.createElement("td");
       marketCap.textContent = "$" +
-        Number(coin.market_cap || 0).toLocaleString("en-US", {
-          notation: "compact",
-          maximumFractionDigits: 2
-        });
+        Number(coin.market_cap || 0).toLocaleString(
+          "en-US",
+          {
+            notation: "compact",
+            maximumFractionDigits: 2
+          }
+        );
 
       const volume = document.createElement("td");
       volume.textContent = "$" +
-        Number(coin.total_volume || 0).toLocaleString("en-US", {
-          notation: "compact",
-          maximumFractionDigits: 2
-        });
+        Number(coin.total_volume || 0).toLocaleString(
+          "en-US",
+          {
+            notation: "compact",
+            maximumFractionDigits: 2
+          }
+        );
 
-      // Preserve IDs used by the existing BTC, ETH and SOL integration.
+      // Preserve existing BTC, ETH and SOL integration IDs.
       if (oldIds[coin.id]) {
         logo.id = prefix + "-logo";
         price.id = prefix + "-table-price";
@@ -1484,23 +1537,36 @@ async function loadTop100Crypto() {
 
     tbody.replaceChildren(fragment);
 
-    console.log("CFT Top 100 loaded:", coins.length, "coins.");
+    console.log(
+      "CFT expanded crypto market loaded:",
+      allCoins.length,
+      "assets."
+    );
 
-    const status = document.getElementById("market-status");
-    if (status) {
-      status.textContent = "TOP 100 MARKET DATA";
+    const marketStatus =
+      document.getElementById("market-status");
+
+    if (marketStatus) {
+      marketStatus.textContent =
+        "TOP " + allCoins.length + " MARKET ASSETS";
     }
 
   } catch (error) {
-    console.error("Top 100 loading error:", error);
+    console.error("Expanded crypto loading error:", error);
 
-    tbody.innerHTML =
-      '<tr><td colspan="5">Market data unavailable. Please try again later.</td></tr>';
+    // Keep existing market rows if a later refresh fails.
+    if (!tbody.children.length) {
+      tbody.innerHTML =
+        '<tr><td colspan="5">Market data unavailable. Please try again later.</td></tr>';
+    }
+
+  } finally {
+    window.cftCryptoLoading = false;
   }
 }
 
 loadTop100Crypto();
-setInterval(loadTop100Crypto, 60000);
+setInterval(loadTop100Crypto, 180000);
 </script>
 
 
@@ -1524,7 +1590,6 @@ setInterval(loadTop100Crypto, 60000);
   const chainSelect = document.getElementById("dex-chain");
   const timeframeSelect = document.getElementById("dex-timeframe");
   const refreshButton = document.getElementById("dex-refresh");
-  const loadMoreButton = document.getElementById("dex-load-more");
 
   if (!newBody || !trendingBody || !gainersBody ||
       !losersBody || !timeframeSelect) return;
@@ -1661,15 +1726,21 @@ setInterval(loadTop100Crypto, 60000);
   }
 
   function uniquePools(items) {
-    const seen = new Set();
+  const seen = new Set();
 
-    return items.filter(pool => {
-      const key = pool.id || pool.attributes?.address;
-      if (!key || seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  }
+  return items.filter(pool => {
+    const network = pool.networkId || getNetworkId(pool);
+    const address = pool.attributes?.address;
+    const key = network && address
+      ? network + ":" + address
+      : pool.id || "";
+
+    if (!key || seen.has(key)) return false;
+
+    seen.add(key);
+    return true;
+  });
+}
 
   function getFiltered(items) {
     const query = (search.value || "").trim().toLowerCase();
@@ -1868,111 +1939,160 @@ setInterval(loadTop100Crypto, 60000);
   }
 
   function renderTable(target, items, emptyMessage, useTimeframe) {
-    target.replaceChildren();
+  target.replaceChildren();
 
-    if (!items.length) {
-      const row = document.createElement("tr");
-      const cell = makeCell(emptyMessage);
-      cell.colSpan = 7;
-      row.appendChild(cell);
-      target.appendChild(row);
-      return;
+  if (!items.length) {
+    const row = document.createElement("tr");
+    const cell = makeCell(emptyMessage);
+    cell.colSpan = 10;
+    row.appendChild(cell);
+    target.appendChild(row);
+    return;
+  }
+
+  items.forEach(pool => {
+    const a = pool.attributes || {};
+    const t = pool.token || {};
+    const tx = a.transactions?.h24 || {};
+
+    const row = document.createElement("tr");
+    const tokenCell = document.createElement("td");
+    const symbolText = (t.symbol || "?").toUpperCase();
+
+    if (t.image_url) {
+      const logo = document.createElement("img");
+      logo.className = "scanner-token-logo";
+      logo.src = t.image_url;
+      logo.alt = (t.name || "Token") + " logo";
+      logo.loading = "lazy";
+
+      const fallback = document.createElement("span");
+      fallback.className = "scanner-logo-fallback";
+      fallback.textContent = symbolText.slice(0, 2);
+      fallback.style.display = "none";
+
+      logo.onerror = () => {
+        logo.style.display = "none";
+        fallback.style.display = "inline-flex";
+      };
+
+      tokenCell.appendChild(logo);
+      tokenCell.appendChild(fallback);
+    } else {
+      const fallback = document.createElement("span");
+      fallback.className = "scanner-logo-fallback";
+      fallback.textContent = symbolText.slice(0, 2);
+      tokenCell.appendChild(fallback);
     }
 
-    items.forEach(pool => {
-      const a = pool.attributes || {};
-      const t = pool.token || {};
-      const row = document.createElement("tr");
-      const tokenCell = document.createElement("td");
+    const name = document.createElement("span");
+    name.className = "scanner-pair-name";
+    name.textContent = t.name || a.name || "Unknown Token";
+    tokenCell.appendChild(name);
 
-      const logoUrl = t.image_url;
-      const symbolText = (t.symbol || "?").toUpperCase();
+    const symbol = document.createElement("span");
+    symbol.className = "scanner-subtext";
+    symbol.textContent = symbolText;
+    tokenCell.appendChild(symbol);
 
-      if (logoUrl) {
-        const logo = document.createElement("img");
-        logo.className = "scanner-token-logo";
-        logo.src = logoUrl;
-        logo.alt = (t.name || "Token") + " logo";
-        logo.loading = "lazy";
+    row.appendChild(tokenCell);
+    row.appendChild(makeCell(pool.networkName));
+    row.appendChild(makeCell(formatPoolAge(a.pool_created_at)));
+    row.appendChild(makeCell(formatPrice(a.base_token_price_usd)));
 
-        const fallback = document.createElement("span");
-        fallback.className = "scanner-logo-fallback";
-        fallback.textContent = symbolText.slice(0, 2);
-        fallback.style.display = "none";
+    const rawChange = useTimeframe
+      ? timeframeChanges.get(poolKey(pool))
+      : a.price_change_percentage?.h24;
 
-        logo.onerror = () => {
-          logo.style.display = "none";
-          fallback.style.display = "inline-flex";
-        };
+    const changeValue =
+      rawChange === null ||
+      rawChange === undefined ||
+      rawChange === ""
+        ? NaN
+        : Number(rawChange);
 
-        tokenCell.appendChild(logo);
-        tokenCell.appendChild(fallback);
-      } else {
-        const fallback = document.createElement("span");
-        fallback.className = "scanner-logo-fallback";
-        fallback.textContent = symbolText.slice(0, 2);
-        tokenCell.appendChild(fallback);
-      }
+    const changeCell = document.createElement("td");
 
-      const name = document.createElement("span");
-      name.className = "scanner-pair-name";
-      name.textContent = t.name || a.name || "Unknown Token";
-      tokenCell.appendChild(name);
+    if (Number.isFinite(changeValue)) {
+      changeCell.textContent =
+        (changeValue >= 0 ? "+" : "") +
+        changeValue.toFixed(2) + "%";
 
-      const symbol = document.createElement("span");
-      symbol.className = "scanner-subtext";
-      symbol.textContent = symbolText;
-      tokenCell.appendChild(symbol);
+      changeCell.className =
+        changeValue >= 0
+          ? "scanner-change-up"
+          : "scanner-change-down";
+    } else {
+      changeCell.textContent = "--";
+    }
 
-      row.appendChild(tokenCell);
-      row.appendChild(makeCell(pool.networkName));
-      row.appendChild(makeCell(formatPrice(a.base_token_price_usd)));
+    row.appendChild(changeCell);
 
-      const rawChangeValue = useTimeframe
-        ? timeframeChanges.get(poolKey(pool))
-        : a.price_change_percentage?.h24;
+    const hasTxData =
+      tx.buys !== undefined || tx.sells !== undefined;
 
-      const changeValue =
-        rawChangeValue === null ||
-        rawChangeValue === undefined ||
-        rawChangeValue === ""
-          ? NaN
-          : Number(rawChangeValue);
+    const buys = Number(tx.buys || 0);
+    const sells = Number(tx.sells || 0);
+    const buyers = Number(tx.buyers || 0);
+    const sellers = Number(tx.sellers || 0);
 
-      const changeCell = document.createElement("td");
+    const txCell = document.createElement("td");
 
-      if (Number.isFinite(changeValue)) {
-        changeCell.textContent =
-          (changeValue >= 0 ? "+" : "") +
-          changeValue.toFixed(2) + "%";
+    if (hasTxData) {
+      const total = document.createElement("span");
+      total.textContent = String(buys + sells);
+      txCell.appendChild(total);
 
-        changeCell.className =
-          changeValue >= 0
-            ? "scanner-change-up"
-            : "scanner-change-down";
-      } else {
-        changeCell.textContent = "--";
-      }
+      const details = document.createElement("span");
+      details.className = "scanner-subtext";
+      details.textContent =
+        buyers + " buyers · " + sellers + " sellers";
+      txCell.appendChild(details);
+    } else {
+      txCell.textContent = "--";
+    }
 
-      row.appendChild(changeCell);
-      row.appendChild(makeCell(compactUSD(a.market_cap_usd)));
-      row.appendChild(makeCell(compactUSD(a.reserve_in_usd)));
-      row.appendChild(makeCell(compactUSD(a.volume_usd?.h24)));
+    row.appendChild(txCell);
 
-      target.appendChild(row);
-    });
-  }
+    const tradeCell = document.createElement("td");
+    tradeCell.textContent = hasTxData
+      ? buys + " / " + sells
+      : "--";
+
+    row.appendChild(tradeCell);
+
+    row.appendChild(makeCell(
+      a.volume_usd?.h24 == null
+        ? "--"
+        : compactUSD(a.volume_usd.h24)
+    ));
+
+    row.appendChild(makeCell(
+      a.reserve_in_usd == null
+        ? "--"
+        : compactUSD(a.reserve_in_usd)
+    ));
+
+    row.appendChild(makeCell(
+      a.fdv_usd == null
+        ? "--"
+        : compactUSD(a.fdv_usd)
+    ));
+
+    target.appendChild(row);
+  });
+}
 
   function updateTimeframeHeaders() {
-    const label = timeframeSelect.value.toUpperCase();
+  const label = timeframeSelect.value.toUpperCase();
 
-    [gainersBody, losersBody].forEach(body => {
-      const header = body.closest("table")
-        ?.querySelector("thead th:nth-child(4)");
+  [gainersBody, losersBody].forEach(body => {
+    const header = body.closest("table")
+      ?.querySelector("thead th:nth-child(5)");
 
-      if (header) header.textContent = label + " CHANGE";
-    });
-  }
+    if (header) header.textContent = label + " CHANGE";
+  });
+}
 
   function renderAll() {
     const filteredNew = getFiltered(newPools);
@@ -2035,18 +2155,20 @@ setInterval(loadTop100Crypto, 60000);
   }
 
   async function loadNewPage(page, append) {
-    const url = API + "/networks/new_pools" +
-      "?include=base_token,network&page=" + page;
+  const url = API + "/networks/new_pools" +
+    "?include=base_token,network&page=" + page;
 
-    const response = await getJSON(url);
-    const received = normalisePools(response);
+  const response = await getJSON(url);
+  const received = normalisePools(response);
 
-    newPools = append
-      ? uniquePools([...newPools, ...received])
-      : received;
+  newPools = append
+    ? uniquePools([...newPools, ...received])
+    : uniquePools(received);
 
-    currentPage = page;
-  }
+  currentPage = append
+    ? Math.max(currentPage, page)
+    : page;
+}
 
   async function loadTrending() {
     const url = API + "/networks/trending_pools" +
@@ -2218,69 +2340,70 @@ setInterval(loadTop100Crypto, 60000);
   }
 
   async function loadInitialData() {
-    if (isRefreshing) return;
+  if (isRefreshing) return;
 
-    isRefreshing = true;
-    status.textContent = "UPDATING...";
-    refreshButton.disabled = true;
+  isRefreshing = true;
+  status.textContent = "UPDATING...";
+  refreshButton.disabled = true;
 
-    try {
-      const results = await Promise.allSettled([
-        loadNewPage(1, false),
-        loadTrending()
-      ]);
+  try {
+    const preserveExisting = newPools.length > 0;
 
-      const newSuccess = results[0].status === "fulfilled";
-      const trendingSuccess = results[1].status === "fulfilled";
+    const results = await Promise.allSettled([
+      loadNewPage(1, preserveExisting),
+      loadTrending()
+    ]);
 
-      if (!newSuccess && !trendingSuccess) {
-        throw new Error("Both market data sources failed.");
-      }
+    const newSuccess = results[0].status === "fulfilled";
+    const trendingSuccess = results[1].status === "fulfilled";
 
-      renderAll();
-
-      loadMoreButton.disabled = !newSuccess;
-      loadMoreButton.textContent = "Load More Pairs";
-
-      if (!newSuccess || !trendingSuccess) {
-        status.textContent = "PARTIAL MARKET DATA";
-      }
-
-      loadTimeframeData();
-
-    } catch (error) {
-      console.error("CFT market error:", error);
-      status.textContent = "DATA UNAVAILABLE";
-      count.textContent = "Unable to load market data. Please retry.";
-    } finally {
-      isRefreshing = false;
-      refreshButton.disabled = false;
+    if (!newSuccess && !trendingSuccess) {
+      throw new Error("Both market data sources failed.");
     }
+
+    renderAll();
+
+    status.textContent =
+      newSuccess && trendingSuccess
+        ? "LIVE MULTICHAIN DATA"
+        : "PARTIAL MARKET DATA";
+
+    loadTimeframeData();
+
+  } catch (error) {
+    console.error("CFT market error:", error);
+    status.textContent = "DATA UNAVAILABLE";
+    count.textContent =
+      "Unable to load market data. Please retry.";
+  } finally {
+    isRefreshing = false;
+    refreshButton.disabled = false;
   }
+}
 
   async function loadMore() {
-    if (isLoadingMore || currentPage >= 10) return;
-
-    isLoadingMore = true;
-    loadMoreButton.disabled = true;
-    loadMoreButton.textContent = "Loading...";
-
-    try {
-      await loadNewPage(currentPage + 1, true);
-      renderAll();
-      loadTimeframeData();
-    } catch (error) {
-      console.error("Pagination error:", error);
-      count.textContent += " | Could not load the next page.";
-    }
-
-    isLoadingMore = false;
-    loadMoreButton.disabled = currentPage >= 10;
-    loadMoreButton.textContent =
-      currentPage >= 10
-        ? "Free API Page Limit Reached"
-        : "Load More Pairs";
+  if (isLoadingMore || isRefreshing || currentPage >= 10) {
+    return;
   }
+
+  isLoadingMore = true;
+
+  try {
+    await loadNewPage(currentPage + 1, true);
+    renderAll();
+    loadTimeframeData();
+
+    console.log(
+      "Automatic New Pairs page loaded:",
+      currentPage
+    );
+
+  } catch (error) {
+    console.error("Automatic pagination error:", error);
+  } finally {
+    isLoadingMore = false;
+  }
+}
 
   search.addEventListener("input", renderAll);
   search.addEventListener("change", loadTimeframeData);
@@ -2292,9 +2415,20 @@ setInterval(loadTop100Crypto, 60000);
 
   timeframeSelect.addEventListener("change", loadTimeframeData);
   refreshButton.addEventListener("click", loadInitialData);
-  loadMoreButton.addEventListener("click", loadMore);
 
   loadInitialData();
+
+  setInterval(() => {
+    if (!isRefreshing && !isLoadingMore && currentPage < 10) {
+      loadMore();
+    }
+  }, 60000);
+
+  setInterval(() => {
+    if (!isRefreshing && !isLoadingMore && currentPage < 10) {
+      loadMore();
+    }
+  }, 60000);
 
   setInterval(loadInitialData, 120000);
 })();
