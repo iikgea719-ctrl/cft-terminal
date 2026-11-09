@@ -982,6 +982,142 @@ footer {
   background: #080808 !important;
 }
 
+
+/* ALL COINS - Minimal black market explorer */
+.all-coins-section {
+  width: 100%;
+  margin-top: 24px;
+  color: #eeeeee;
+}
+
+.all-coins-section[hidden] {
+  display: none !important;
+}
+
+.all-coins-filter-group {
+  margin: 20px 0;
+}
+
+.all-coins-filter-label {
+  color: #888888;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.all-coins-filter-list {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.all-coins-filter-list::-webkit-scrollbar {
+  display: none;
+}
+
+.all-coins-filter {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 5px 10px;
+  color: #aaaaaa;
+  background: transparent;
+  border: 1px solid #292929;
+  border-radius: 3px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.all-coins-filter.active {
+  color: #16c784;
+  border-color: #16c784;
+}
+
+.all-coins-filter img,
+.all-coins-network-icon {
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.all-coins-network-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #202020;
+  color: #dddddd;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.all-coins-toolbar {
+  display: flex;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.all-coins-toolbar input {
+  flex: 1;
+  min-width: 0;
+  padding: 11px;
+  color: #eeeeee;
+  background: #000000;
+  border: 1px solid #333333;
+  border-radius: 2px;
+}
+
+.all-coins-toolbar button,
+.all-coins-pagination button {
+  padding: 9px 14px;
+  color: #eeeeee;
+  background: #000000;
+  border: 1px solid #333333;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.all-coins-toolbar button:hover,
+.all-coins-pagination button:hover {
+  color: #16c784;
+  border-color: #16c784;
+}
+
+.all-coins-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.all-coins-muted {
+  color: #777777;
+  font-size: 11px;
+}
+
+@media (max-width: 600px) {
+  .all-coins-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .all-coins-toolbar input {
+    flex-basis: 100%;
+  }
+
+  .all-coins-pagination {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1083,6 +1219,7 @@ footer {
       <button type="button" class="cft-market-tab" data-market-view="trending">Top Trending</button>
       <button type="button" class="cft-market-tab" data-market-view="gainers">Gainers</button>
       <button type="button" class="cft-market-tab" data-market-view="losers">Losers</button>
+      <button type="button" class="cft-market-tab" data-market-view="all-coins">All Coins</button>
     </nav>
   </div>
 
@@ -1264,6 +1401,69 @@ footer {
 
 </section>
 
+
+
+<section id="all-coins" class="all-coins-section" hidden>
+  <div class="scanner-heading">
+    <div>
+      <span class="scanner-eyebrow">MULTICHAIN TOKEN EXPLORER</span>
+      <h2>All Coins</h2>
+      <p>Explore tokens and liquidity pools across supported networks.</p>
+    </div>
+    <span id="all-coins-status" class="scanner-status">CONNECTING...</span>
+  </div>
+
+  <div class="all-coins-filter-group">
+    <div class="all-coins-filter-label">NETWORKS</div>
+    <div id="all-coins-networks" class="all-coins-filter-list">
+      <span class="all-coins-muted">Loading networks...</span>
+    </div>
+  </div>
+
+  <div class="all-coins-filter-group">
+    <div class="all-coins-filter-label">DEX / LAUNCHPADS</div>
+    <div id="all-coins-dexes" class="all-coins-filter-list">
+      <span class="all-coins-muted">Select a network to load DEX filters.</span>
+    </div>
+  </div>
+
+  <div class="all-coins-toolbar">
+    <input
+      type="search"
+      id="all-coins-search"
+      placeholder="Search token, symbol or contract..."
+      autocomplete="off"
+    >
+    <button type="button" id="all-coins-refresh">Refresh</button>
+  </div>
+
+  <div class="scanner-table-wrap">
+    <table class="scanner-table">
+      <thead>
+        <tr>
+          <th>TOKEN</th>
+          <th>NETWORK</th>
+          <th>DEX</th>
+          <th>PRICE</th>
+          <th>24H CHANGE</th>
+          <th>VOLUME 24H</th>
+          <th>LIQUIDITY</th>
+          <th>FDV</th>
+        </tr>
+      </thead>
+      <tbody id="all-coins-body">
+        <tr><td colspan="8">Preparing token explorer...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="all-coins-pagination">
+    <span id="all-coins-count" class="scanner-footer">
+      Waiting for market data...
+    </span>
+    <button type="button" id="all-coins-load-more">Load More</button>
+  </div>
+</section>
 
 <h2 class="section-title">Latest Financial Intelligence</h2>
   <div class="news-grid">
@@ -2463,10 +2663,14 @@ setInterval(loadTop100Crypto, 60000);
 
   function setMarketView(view) {
     const isCrypto = view === "crypto";
+    const isAllCoins = view === "all-coins";
+    const isDexView = ["new-pairs", "trending", "gainers", "losers"].includes(view);
+    const allCoinsSection = document.getElementById("all-coins");
 
     if (cexHeading) cexHeading.hidden = !isCrypto;
     if (cexContent) cexContent.hidden = !isCrypto;
-    if (dexScanner) dexScanner.hidden = isCrypto;
+    if (dexScanner) dexScanner.hidden = !isDexView;
+    if (allCoinsSection) allCoinsSection.hidden = !isAllCoins;
 
     Object.entries(sections).forEach(([key, section]) => {
       if (section) {
@@ -2489,6 +2693,747 @@ setInterval(loadTop100Crypto, 60000);
   });
 
   setMarketView("crypto");
+})();
+</script>
+
+
+<style id="all-coins-engine-style">
+.all-coins-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.all-coins-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 5px 10px;
+  border: 1px solid #292929;
+  border-radius: 22px;
+  background: #080808;
+  color: #a5a5a5;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.all-coins-filter:hover,
+.all-coins-filter.active {
+  border-color: #777;
+  color: #fff;
+}
+
+.all-coins-network-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 20px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #171717;
+  color: #ddd;
+  font-size: 10px;
+}
+
+.all-coins-network-icon img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
+
+.all-coins-icon-fallback {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.all-coins-token-cell {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 130px;
+}
+
+.all-coins-token-logo,
+.all-coins-token-fallback {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #171717;
+}
+
+.all-coins-token-fallback {
+  display: grid;
+  place-items: center;
+  color: #ddd;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.all-coins-token-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.all-coins-token-info strong {
+  color: #eee;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.all-coins-token-info small {
+  color: #777;
+  font-size: 10px;
+}
+
+.all-coins-empty {
+  padding: 28px 12px !important;
+  color: #777;
+  text-align: center;
+}
+
+.all-coins-section [data-state="success"] {
+  color: #83c99b;
+}
+
+.all-coins-section [data-state="error"] {
+  color: #e58a8a;
+}
+
+.all-coins-section [data-state="loading"] {
+  color: #aaa;
+}
+
+.all-coins-pagination button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .all-coins-filter-list {
+    gap: 6px;
+  }
+
+  .all-coins-filter {
+    min-height: 30px;
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+  .all-coins-network-icon {
+    width: 18px;
+    height: 18px;
+    flex-basis: 18px;
+  }
+}
+</style>
+
+
+<script id="all-coins-engine">
+(function () {
+  "use strict";
+
+  const API = "https://api.geckoterminal.com/api/v2";
+  const HEADERS = {
+    "Accept": "application/json;version=20230302"
+  };
+
+  const PAGE_SIZE = 20;
+  const REFRESH_INTERVAL = 60000;
+  const REQUEST_GAP = 1200;
+
+  const elements = {
+    section: document.getElementById("all-coins"),
+    status: document.getElementById("all-coins-status"),
+    networks: document.getElementById("all-coins-networks"),
+    dexes: document.getElementById("all-coins-dexes"),
+    search: document.getElementById("all-coins-search"),
+    refresh: document.getElementById("all-coins-refresh"),
+    body: document.getElementById("all-coins-body"),
+    count: document.getElementById("all-coins-count"),
+    more: document.getElementById("all-coins-load-more")
+  };
+
+  if (Object.values(elements).some(function (element) {
+    return !element;
+  })) {
+    console.warn("ALL COINS: Required HTML elements are missing.");
+    return;
+  }
+
+  let networks = [];
+  let pools = [];
+  let dexMap = new Map();
+
+  let selectedNetwork = "all";
+  let selectedDex = "all";
+  let currentPage = 1;
+  let isLoading = false;
+  let hasMore = true;
+  let initialized = false;
+  let lastRequestTime = 0;
+  let requestQueue = Promise.resolve();
+
+  const networkIcons = {
+    ethereum: "ethereum",
+    eth: "ethereum",
+    solana: "solana",
+    bsc: "bnbchain",
+    "binance-smart-chain": "bnbchain",
+    polygon: "polygon",
+    arbitrum: "arbitrum",
+    optimism: "optimism",
+    avalanche: "avalanche",
+    base: "base",
+    fantom: "fantom",
+    cronos: "cronos",
+    gnosis: "gnosis",
+    celo: "celo",
+    moonbeam: "moonbeam",
+    mantle: "mantle",
+    linea: "linea",
+    blast: "blast",
+    zksync: "zksync",
+    sonic: "sonic",
+    berachain: "berachain"
+  };
+
+  const dexIcons = {
+    uniswap: "uniswap",
+    pancakeswap: "pancakeswap",
+    raydium: "raydium",
+    orca: "orca",
+    aerodrome: "aerodrome",
+    curve: "curve",
+    balancer: "balancer",
+    sushi: "sushiswap",
+    sushiswap: "sushiswap",
+    traderjoe: "traderjoexyz",
+    quickswap: "quickswap",
+    camelot: "camelot",
+    lifinity: "lifinity",
+    meteora: "meteora",
+    pumpfun: "pumpfun"
+  };
+
+  function escapeHTML(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, function (char) {
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char];
+    });
+  }
+
+  function safeImageURL(value) {
+    if (!value) return "";
+    try {
+      const url = new URL(value);
+      return url.protocol === "https:" || url.protocol === "http:" ? url.href : "";
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function initials(value) {
+    return String(value || "?")
+      .trim()
+      .split(/[\s_-]+/)
+      .slice(0, 2)
+      .map(function (part) {
+        return part.charAt(0);
+      })
+      .join("")
+      .toUpperCase();
+  }
+
+  function iconURL(slug) {
+    if (!slug) return "";
+    return "https://cdn.jsdelivr.net/npm/simple-icons@v15/icons/" +
+      encodeURIComponent(slug) + ".svg";
+  }
+
+  function networkIcon(networkId) {
+    const key = String(networkId || "").toLowerCase();
+    return networkIcons[key] || "";
+  }
+
+  function dexIcon(dexId, dexName) {
+    const text = (String(dexId || "") + " " + String(dexName || ""))
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+
+    for (const key of Object.keys(dexIcons)) {
+      if (text.includes(key)) return dexIcons[key];
+    }
+
+    return "";
+  }
+
+  function formatUSD(value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return "—";
+
+    if (number >= 1) {
+      return "$" + number.toLocaleString("en-US", {
+        maximumFractionDigits: 2
+      });
+    }
+
+    if (number > 0) {
+      return "$" + number.toPrecision(4);
+    }
+
+    return "$0";
+  }
+
+  function formatChange(value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return "—";
+
+    const sign = number > 0 ? "+" : "";
+    return sign + number.toFixed(2) + "%";
+  }
+
+  function formatCompact(value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return "—";
+
+    return "$" + new Intl.NumberFormat("en-US", {
+      notation: "compact",
+      maximumFractionDigits: 2
+    }).format(number);
+  }
+
+  function setStatus(message, state) {
+    elements.status.textContent = message;
+
+    elements.status.dataset.state = state || "normal";
+  }
+
+  function apiRequest(url) {
+    const task = requestQueue.then(async function () {
+      const elapsed = Date.now() - lastRequestTime;
+      const wait = Math.max(0, REQUEST_GAP - elapsed);
+
+      if (wait > 0) {
+        await new Promise(function (resolve) {
+          setTimeout(resolve, wait);
+        });
+      }
+
+      const response = await fetch(url, {
+        headers: HEADERS
+      });
+
+      lastRequestTime = Date.now();
+
+      if (!response.ok) {
+        throw new Error("API HTTP " + response.status);
+      }
+
+      return response.json();
+    });
+
+    requestQueue = task.catch(function () {});
+    return task;
+  }
+
+  function findIncluded(included, type, id) {
+    return included.find(function (item) {
+      return item.type === type && item.id === id;
+    });
+  }
+
+  function normalisePools(response, fallbackNetwork) {
+    const included = response.included || [];
+
+    return (response.data || []).map(function (pool) {
+      const relationships = pool.relationships || {};
+
+      const tokenId = relationships.base_token &&
+        relationships.base_token.data
+        ? relationships.base_token.data.id
+        : null;
+
+      const dexId = relationships.dex &&
+        relationships.dex.data
+        ? relationships.dex.data.id
+        : null;
+
+      const networkId = relationships.network &&
+        relationships.network.data
+        ? relationships.network.data.id
+        : fallbackNetwork || "";
+
+      const token = findIncluded(included, "token", tokenId);
+      const dex = findIncluded(included, "dex", dexId);
+      const network = findIncluded(included, "network", networkId);
+
+      if (dexId) {
+        dexMap.set(dexId, {
+          id: dexId,
+          name: dex && dex.attributes
+            ? dex.attributes.name || dexId
+            : dexId
+        });
+      }
+
+      return {
+        id: pool.id,
+        attributes: pool.attributes || {},
+        token: token && token.attributes ? token.attributes : {},
+        dexId: dexId || "",
+        dexName: dex && dex.attributes
+          ? dex.attributes.name || dexId
+          : dexId || "Unknown DEX",
+        networkId: networkId,
+        networkName: network && network.attributes
+          ? network.attributes.name || networkId
+          : networkId || "Unknown"
+      };
+    });
+  }
+
+  function uniquePools(items) {
+    const seen = new Set();
+
+    return items.filter(function (pool) {
+      const key = pool.networkId + ":" + pool.id;
+
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function getVisiblePools() {
+    const searchTerm = elements.search.value.trim().toLowerCase();
+
+    return pools.filter(function (pool) {
+      const networkMatch = selectedNetwork === "all" ||
+        pool.networkId === selectedNetwork;
+
+      const dexMatch = selectedDex === "all" ||
+        pool.dexId === selectedDex;
+
+      const tokenName = pool.token.name || "";
+      const tokenSymbol = pool.token.symbol || "";
+      const contract = pool.token.address || "";
+
+      const searchMatch = !searchTerm ||
+        tokenName.toLowerCase().includes(searchTerm) ||
+        tokenSymbol.toLowerCase().includes(searchTerm) ||
+        contract.toLowerCase().includes(searchTerm);
+
+      return networkMatch && dexMatch && searchMatch;
+    });
+  }
+
+  function renderNetworks() {
+    const allButton = `
+      <button type="button" class="all-coins-filter active"
+        data-network="all">
+        <span class="all-coins-network-icon">◎</span>
+        <span>All Networks</span>
+      </button>`;
+
+    const networkButtons = networks.map(function (network) {
+      const id = network.id;
+      const name = network.attributes && network.attributes.name
+        ? network.attributes.name
+        : id;
+
+      const slug = networkIcon(id);
+      const icon = slug
+        ? `<img src="${iconURL(slug)}" alt=""
+             onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+           <span class="all-coins-icon-fallback" style="display:none">${escapeHTML(initials(name))}</span>`
+        : `<span class="all-coins-icon-fallback">${escapeHTML(initials(name))}</span>`;
+
+      return `
+        <button type="button" class="all-coins-filter"
+          data-network="${escapeHTML(id)}"
+          title="${escapeHTML(name)}">
+          <span class="all-coins-network-icon">${icon}</span>
+          <span>${escapeHTML(name)}</span>
+        </button>`;
+    }).join("");
+
+    elements.networks.innerHTML = allButton + networkButtons;
+  }
+
+  function renderDexes() {
+    const allButton = `
+      <button type="button" class="all-coins-filter active"
+        data-dex="all">
+        <span class="all-coins-network-icon">◎</span>
+        <span>All DEX</span>
+      </button>`;
+
+    const list = Array.from(dexMap.values()).sort(function (a, b) {
+      return a.name.localeCompare(b.name);
+    });
+
+    const buttons = list.map(function (dex) {
+      const slug = dexIcon(dex.id, dex.name);
+      const icon = slug
+        ? `<img src="${iconURL(slug)}" alt=""
+             onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+           <span class="all-coins-icon-fallback" style="display:none">${escapeHTML(initials(dex.name))}</span>`
+        : `<span class="all-coins-icon-fallback">${escapeHTML(initials(dex.name))}</span>`;
+
+      return `
+        <button type="button" class="all-coins-filter"
+          data-dex="${escapeHTML(dex.id)}"
+          title="${escapeHTML(dex.name)}">
+          <span class="all-coins-network-icon">${icon}</span>
+          <span>${escapeHTML(dex.name)}</span>
+        </button>`;
+    }).join("");
+
+    elements.dexes.innerHTML = allButton + buttons;
+  }
+
+  function renderTable() {
+    const visible = getVisiblePools();
+
+    if (!visible.length) {
+      elements.body.innerHTML = `
+        <tr><td colspan="8" class="all-coins-empty">
+          No matching tokens found.
+        </td></tr>`;
+    } else {
+      elements.body.innerHTML = visible.map(function (pool) {
+        const token = pool.token;
+        const attributes = pool.attributes;
+
+        const name = token.name || attributes.name || "Unknown Token";
+        const symbol = token.symbol || "";
+        const image = safeImageURL(token.image_url);
+        const change = attributes.price_change_percentage &&
+          attributes.price_change_percentage.h24;
+
+        const changeNumber = Number(change);
+        const changeClass = Number.isFinite(changeNumber)
+          ? changeNumber >= 0 ? "positive" : "negative"
+          : "";
+
+        const tokenImage = image
+          ? `<img class="all-coins-token-logo"
+               src="${escapeHTML(image)}"
+               alt=""
+               loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+             <span class="all-coins-token-fallback" style="display:none">${escapeHTML(initials(symbol || name))}</span>`
+          : `<span class="all-coins-token-fallback">${escapeHTML(initials(symbol || name))}</span>`;
+
+        return `
+          <tr>
+            <td>
+              <div class="all-coins-token-cell">
+                ${tokenImage}
+                <div class="all-coins-token-info">
+                  <strong>${escapeHTML(name)}</strong>
+                  <small>${escapeHTML(symbol)}</small>
+                </div>
+              </div>
+            </td>
+            <td>${escapeHTML(pool.networkName)}</td>
+            <td>${escapeHTML(pool.dexName)}</td>
+            <td>${formatUSD(attributes.base_token_price_usd)}</td>
+            <td class="${changeClass}">${formatChange(change)}</td>
+            <td>${formatCompact(attributes.volume_usd && attributes.volume_usd.h24)}</td>
+            <td>${formatCompact(attributes.reserve_in_usd)}</td>
+            <td>${formatCompact(attributes.fdv_usd)}</td>
+          </tr>`;
+      }).join("");
+    }
+
+    elements.count.textContent =
+      "Showing " + visible.length + " of " + pools.length +
+      " loaded pools";
+
+    elements.more.disabled = isLoading || !hasMore;
+    elements.more.textContent = isLoading
+      ? "Loading..."
+      : hasMore ? "Load More" : "No More Data";
+  }
+
+  function activateFilter(container, attribute, value) {
+    container.querySelectorAll("[data-" + attribute + "]").forEach(function (button) {
+      button.classList.toggle(
+        "active",
+        button.getAttribute("data-" + attribute) === value
+      );
+    });
+  }
+
+  async function loadNetworks() {
+    try {
+      const response = await apiRequest(API + "/networks?page=1");
+      networks = response.data || [];
+      renderNetworks();
+    } catch (error) {
+      console.error("ALL COINS network error:", error);
+      elements.networks.innerHTML =
+        '<span class="all-coins-muted">Unable to load network list. Try refreshing.</span>';
+    }
+  }
+
+  async function loadPools(append) {
+    if (isLoading) return;
+
+    isLoading = true;
+    renderTable();
+    setStatus("LOADING DATA...", "loading");
+
+    if (!append) {
+      currentPage = 1;
+      hasMore = true;
+      pools = [];
+      dexMap.clear();
+      selectedDex = "all";
+      renderDexes();
+    }
+
+    const endpoint = selectedNetwork === "all"
+      ? API + "/networks/new_pools?include=base_token,network,dex&page=" + currentPage
+      : API + "/networks/" + encodeURIComponent(selectedNetwork) +
+        "/pools?include=base_token,dex&page=" + currentPage;
+
+    try {
+      const response = await apiRequest(endpoint);
+      const items = normalisePools(response, selectedNetwork === "all" ? "" : selectedNetwork);
+
+      pools = append
+        ? uniquePools(pools.concat(items))
+        : uniquePools(items);
+
+      hasMore = items.length >= PAGE_SIZE && currentPage < 50;
+
+      renderDexes();
+      renderTable();
+
+      setStatus("LIVE DATA", "success");
+      initialized = true;
+
+    } catch (error) {
+      console.error("ALL COINS pool error:", error);
+
+      setStatus("API ERROR", "error");
+
+      if (!pools.length) {
+        elements.body.innerHTML = `
+          <tr><td colspan="8" class="all-coins-empty">
+            Unable to load market data. Please try Refresh.
+          </td></tr>`;
+      }
+
+      elements.count.textContent = error.message;
+    } finally {
+      isLoading = false;
+      renderTable();
+    }
+  }
+
+  async function changeNetwork(networkId) {
+    if (selectedNetwork === networkId) return;
+
+    selectedNetwork = networkId;
+    selectedDex = "all";
+
+    activateFilter(elements.networks, "network", networkId);
+    activateFilter(elements.dexes, "dex", "all");
+
+    currentPage = 1;
+    await loadPools(false);
+  }
+
+  elements.networks.addEventListener("click", function (event) {
+    const button = event.target.closest("[data-network]");
+    if (!button) return;
+
+    changeNetwork(button.getAttribute("data-network"));
+  });
+
+  elements.dexes.addEventListener("click", function (event) {
+    const button = event.target.closest("[data-dex]");
+    if (!button) return;
+
+    selectedDex = button.getAttribute("data-dex");
+    activateFilter(elements.dexes, "dex", selectedDex);
+    renderTable();
+  });
+
+  elements.search.addEventListener("input", renderTable);
+
+  elements.refresh.addEventListener("click", function () {
+    loadPools(false);
+  });
+
+  elements.more.addEventListener("click", function () {
+    if (isLoading || !hasMore) return;
+
+    currentPage += 1;
+    loadPools(true);
+  });
+
+  async function initialise() {
+    if (initialized) return;
+
+    setStatus("CONNECTING...", "loading");
+
+    await loadNetworks();
+    await loadPools(false);
+  }
+
+  const allCoinsTab = document.querySelector(
+    '[data-market-view="all-coins"]'
+  );
+
+  if (allCoinsTab) {
+    allCoinsTab.addEventListener("click", initialise);
+  }
+
+  document.addEventListener("visibilitychange", function () {
+    if (
+      document.visibilityState === "visible" &&
+      elements.section &&
+      !elements.section.hidden &&
+      initialized
+    ) {
+      loadPools(false);
+    }
+  });
+
+  setInterval(function () {
+    if (
+      document.visibilityState === "visible" &&
+      elements.section &&
+      !elements.section.hidden &&
+      initialized
+    ) {
+      loadPools(false);
+    }
+  }, REFRESH_INTERVAL);
+
+  if (allCoinsTab && allCoinsTab.classList.contains("active")) {
+    initialise();
+  }
 })();
 </script>
 
