@@ -609,7 +609,99 @@ td {
   border-left: 2px solid var(--green);
 }
 
-\n</style>
+\n
+/* CFT MARKET CATEGORY NAVIGATION */
+
+#cft-market-toolbar .cft-toolbar-main {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  flex-wrap: nowrap;
+}
+
+#cft-market-toolbar .cft-market-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 22px;
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+#cft-market-toolbar .cft-market-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+#cft-market-toolbar .cft-market-tab {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 2px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: #999999;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+#cft-market-toolbar .cft-market-tab:hover,
+#cft-market-toolbar .cft-market-tab.active {
+  color: #16c784;
+}
+
+#cft-market-toolbar .cft-market-tab.active {
+  border-bottom-color: #16c784;
+}
+
+#cft-market-toolbar .scanner-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+#cft-market-toolbar .scanner-controls select {
+  flex: 0 0 auto;
+}
+
+#cft-cex-heading[hidden],
+#cft-cex-content[hidden],
+#cft-dex-scanner[hidden],
+.dex-market-section[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 800px) {
+  #cft-market-toolbar .cft-market-tabs {
+    gap: 20px;
+  }
+
+  #cft-market-toolbar .cft-market-tab {
+    min-height: 40px;
+    font-size: 11px;
+  }
+
+  #cft-market-toolbar .scanner-controls {
+    gap: 6px;
+  }
+}
+
+</style>
 <style>
 /* CFT AXIOM-INSPIRED TERMINAL TOOLBAR */
 
@@ -753,6 +845,117 @@ td {
 }
 
 
+
+/* CFT SIDEBAR COMPACT AND PURE BLACK DEX REVISION */
+
+/* Sidebar desktop */
+.cft-sidebar {
+  width: 210px !important;
+  background: #000000 !important;
+  border-right: 1px solid #292929 !important;
+}
+
+.cft-topbar,
+main,
+footer {
+  margin-left: 210px;
+}
+
+/* Sidebar mobile */
+@media (max-width: 800px) {
+  .cft-sidebar {
+    width: 125px !important;
+    padding: 18px 6px !important;
+  }
+
+  .cft-topbar,
+  main,
+  footer {
+    margin-left: 125px !important;
+  }
+
+  .sidebar-nav a {
+    gap: 4px;
+    padding: 8px 4px;
+    font-size: 8px;
+  }
+
+  .sidebar-nav a span:last-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .sidebar-brand .brand {
+    font-size: 21px;
+  }
+}
+
+/* Pure black DEX */
+#cft-dex-scanner,
+#cft-dex-scanner .scanner-heading,
+#cft-dex-scanner .dex-market-section,
+#cft-dex-scanner .scanner-table-wrap,
+#cft-dex-scanner .scanner-table,
+#cft-dex-scanner .scanner-table th,
+#cft-dex-scanner .scanner-table td {
+  background: #000000 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+#cft-dex-scanner {
+  border: none !important;
+  padding: 14px 0 !important;
+}
+
+#cft-dex-scanner .dex-market-section {
+  border: none !important;
+  border-bottom: 1px solid #292929 !important;
+  padding: 14px 0 !important;
+  margin: 0 0 12px !important;
+}
+
+#cft-dex-scanner .scanner-heading {
+  border-bottom: 1px solid #292929 !important;
+  padding-bottom: 12px;
+}
+
+#cft-dex-scanner .scanner-table th,
+#cft-dex-scanner .scanner-table td {
+  border: none !important;
+  border-bottom: 1px solid #222222 !important;
+}
+
+#cft-dex-scanner .scanner-table tr:hover td {
+  background: #080808 !important;
+}
+
+/* DEX controls: black background, grey lines */
+#cft-market-toolbar input,
+#cft-market-toolbar select,
+#cft-market-toolbar button:not(.cft-market-tab),
+#cft-dex-scanner .scanner-controls input,
+#cft-dex-scanner .scanner-controls select,
+#cft-dex-scanner .scanner-controls button,
+#cft-dex-scanner .dex-load-more {
+  color: #eeeeee !important;
+  background: #000000 !important;
+  border: 1px solid #333333 !important;
+  border-radius: 2px !important;
+}
+
+#cft-dex-scanner .dex-load-more:hover {
+  border-color: #777777 !important;
+}
+
+#cft-dex-scanner .scanner-eyebrow {
+  color: #aaaaaa !important;
+}
+
+#cft-dex-scanner .scanner-table th {
+  color: #888888 !important;
+}
+
 </style>
 </head>
 <body>
@@ -848,41 +1051,39 @@ td {
 
 <div id="cft-market-toolbar">
   <div class="cft-toolbar-main">
-    <div class="cft-mode-switch">
-      <button type="button" class="cft-mode active" data-mode="cex">CEX</button>
-      <button type="button" class="cft-mode" data-mode="dex">DEX</button>
-    </div>
-    <div class="scanner-controls">
-      <input type="search" id="dex-search" placeholder="Search token, symbol or contract...">
-      <select id="dex-chain">
-        <option value="all">All Chains</option>
-        <option value="solana">Solana</option>
-        <option value="eth">Ethereum</option>
-        <option value="bsc">BNB Chain</option>
-        <option value="base">Base</option>
-        <option value="arbitrum">Arbitrum</option>
-        <option value="optimism">Optimism</option>
-        <option value="polygon">Polygon</option>
-        <option value="avax">Avalanche</option>
-      </select>
-      <select id="dex-timeframe">
-        <option value="24h">24H</option>
-        <option value="4h">4H</option>
-        <option value="1h">1H</option>
-        <option value="30m">30M</option>
-        <option value="15m">15M</option>
-        <option value="5m">5M</option>
-        <option value="1m">1M</option>
-      </select>
-      <button id="dex-refresh" type="button">Refresh</button>
-    </div>
+    <nav class="cft-market-tabs" aria-label="Market categories">
+      <button type="button" class="cft-market-tab active" data-market-view="crypto">Crypto</button>
+      <button type="button" class="cft-market-tab" data-market-view="new-pairs">New Pairs</button>
+      <button type="button" class="cft-market-tab" data-market-view="trending">Top Trending</button>
+      <button type="button" class="cft-market-tab" data-market-view="gainers">Gainers</button>
+      <button type="button" class="cft-market-tab" data-market-view="losers">Losers</button>
+    </nav>
   </div>
-  <nav class="cft-market-tabs">
-    <a href="#dex-trending">Trending</a>
-    <a href="#dex-new-pairs">New Pairs</a>
-    <a href="#dex-gainers">Gainers</a>
-    <a href="#dex-losers">Losers</a>
-  </nav>
+
+  <div class="scanner-controls">
+    <input type="search" id="dex-search" placeholder="Search token, symbol or contract...">
+    <select id="dex-chain">
+      <option value="all">All Chains</option>
+      <option value="solana">Solana</option>
+      <option value="eth">Ethereum</option>
+      <option value="bsc">BNB Chain</option>
+      <option value="base">Base</option>
+      <option value="arbitrum">Arbitrum</option>
+      <option value="optimism">Optimism</option>
+      <option value="polygon_pos">Polygon</option>
+      <option value="avax">Avalanche</option>
+    </select>
+    <select id="dex-timeframe">
+      <option value="24h">24H</option>
+      <option value="4h">4H</option>
+      <option value="1h">1H</option>
+      <option value="30m">30M</option>
+      <option value="15m">15M</option>
+      <option value="5m">5M</option>
+      <option value="1m">1M</option>
+    </select>
+    <button id="dex-refresh" type="button">Refresh</button>
+  </div>
 </div>
 
 <h2 id="cft-cex-heading" class="section-title">Crypto Market Watch</h2>
@@ -920,38 +1121,6 @@ td {
       <p>Discover new tokens and monitor decentralized markets.</p>
     </div>
     <span id="dex-status" class="scanner-status">CONNECTING...</span>
-  </div>
-
-  <div class="scanner-controls">
-    <input
-      type="search"
-      id="dex-search"
-      placeholder="Search token, symbol or contract..."
-    >
-
-    <select id="dex-chain">
-      <option value="all">All Networks</option>
-      <option value="solana">Solana</option>
-      <option value="eth">Ethereum</option>
-      <option value="bsc">BNB Chain</option>
-      <option value="base">Base</option>
-      <option value="arbitrum">Arbitrum</option>
-      <option value="optimism">Optimism</option>
-      <option value="polygon_pos">Polygon</option>
-      <option value="avax">Avalanche</option>
-    </select>
-
-    <select id="dex-timeframe" aria-label="Market timeframe">
-      <option value="24h">24H</option>
-      <option value="4h">4H</option>
-      <option value="1h">1H</option>
-      <option value="30m">30M</option>
-      <option value="15m">15M</option>
-      <option value="5m">5M</option>
-      <option value="1m">1M</option>
-    </select>
-
-    <button id="dex-refresh" type="button">Refresh</button>
   </div>
 
   <div id="dex-new-pairs" class="dex-market-section">
@@ -1180,60 +1349,7 @@ setInterval(updateMarket, 30000);
 </script>
 
 
-<script>
-async function updateCoinDetails() {
-  const coins = [
-    {id:"bitcoin", prefix:"btc"},
-    {id:"ethereum", prefix:"eth"},
-    {id:"solana", prefix:"sol"}
-  ];
 
-  try {
-    const url =
-      "https://api.coingecko.com/api/v3/coins/markets" +
-      "?vs_currency=usd&ids=bitcoin%2Cethereum%2Csolana" +
-      "&order=market_cap_desc&per_page=3&page=1";
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("CoinGecko API error: " + response.status);
-    }
-
-    const data = await response.json();
-
-    coins.forEach(item => {
-      const coin = data.find(c => c.id === item.id);
-      if (!coin) return;
-
-      const logo = document.getElementById(item.prefix + "-logo");
-      const cap = document.getElementById(
-        item.prefix + "-marketcap"
-      );
-
-      if (logo) {
-        logo.src = coin.image;
-      }
-
-      if (cap) {
-        cap.textContent = "$" +
-          Number(coin.market_cap).toLocaleString("en-US", {
-            notation:"compact",
-            maximumFractionDigits:2
-          });
-      }
-    });
-
-    console.log("CFT coin logos and market caps updated.");
-
-  } catch(error) {
-    console.error("Coin details error:", error);
-  }
-}
-
-updateCoinDetails();
-setInterval(updateCoinDetails, 60000);
-</script>
 
 
 <script>
@@ -1389,6 +1505,7 @@ setInterval(loadTop100Crypto, 60000);
   let trendingPools = [];
   let currentPage = 1;
   let isLoadingMore = false;
+  let isRefreshing = false;
   let timeframeJobId = 0;
   let lastOhlcvRequestAt = 0;
 
@@ -1912,6 +2029,9 @@ setInterval(loadTop100Crypto, 60000);
   }
 
   async function loadInitialData() {
+    if (isRefreshing) return;
+
+    isRefreshing = true;
     status.textContent = "UPDATING...";
     refreshButton.disabled = true;
 
@@ -1943,9 +2063,10 @@ setInterval(loadTop100Crypto, 60000);
       console.error("CFT market error:", error);
       status.textContent = "DATA UNAVAILABLE";
       count.textContent = "Unable to load market data. Please retry.";
+    } finally {
+      isRefreshing = false;
+      refreshButton.disabled = false;
     }
-
-    refreshButton.disabled = false;
   }
 
   async function loadMore() {
@@ -1998,33 +2119,44 @@ setInterval(loadTop100Crypto, 60000);
   const cexHeading = document.getElementById("cft-cex-heading");
   const cexContent = document.getElementById("cft-cex-content");
   const dexScanner = document.getElementById("cft-dex-scanner");
-  const modeButtons = document.querySelectorAll(".cft-mode");
-  const tabs = document.querySelectorAll(".cft-market-tabs a");
 
-  function setMode(mode) {
-    const isCex = mode === "cex";
-    if (cexHeading) cexHeading.hidden = !isCex;
-    if (cexContent) cexContent.hidden = !isCex;
-    if (dexScanner) dexScanner.hidden = isCex;
+  const buttons = document.querySelectorAll(".cft-market-tab");
 
-    modeButtons.forEach(button => {
-      button.classList.toggle("active", button.dataset.mode === mode);
+  const sections = {
+    "new-pairs": document.getElementById("dex-new-pairs"),
+    "trending": document.getElementById("dex-trending"),
+    "gainers": document.getElementById("dex-gainers"),
+    "losers": document.getElementById("dex-losers")
+  };
+
+  function setMarketView(view) {
+    const isCrypto = view === "crypto";
+
+    if (cexHeading) cexHeading.hidden = !isCrypto;
+    if (cexContent) cexContent.hidden = !isCrypto;
+    if (dexScanner) dexScanner.hidden = isCrypto;
+
+    Object.entries(sections).forEach(([key, section]) => {
+      if (section) {
+        section.hidden = isCrypto || key !== view;
+      }
+    });
+
+    buttons.forEach(button => {
+      const isActive = button.dataset.marketView === view;
+
+      button.classList.toggle("active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
     });
   }
 
-  modeButtons.forEach(button => {
-    button.addEventListener("click", () => setMode(button.dataset.mode));
-  });
-
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      setMode("dex");
-      tabs.forEach(item => item.classList.remove("active"));
-      tab.classList.add("active");
+  buttons.forEach(button => {
+    button.addEventListener("click", () => {
+      setMarketView(button.dataset.marketView);
     });
   });
 
-  setMode("cex");
+  setMarketView("crypto");
 })();
 </script>
 
