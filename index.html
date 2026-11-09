@@ -956,6 +956,32 @@ footer {
   color: #888888 !important;
 }
 
+
+/* CFT New Pairs scanner */
+#dex-new-pairs .scanner-table {
+  min-width: 900px;
+}
+
+#dex-new-pairs .scanner-table th,
+#dex-new-pairs .scanner-table td {
+  padding: 13px 12px;
+  vertical-align: middle;
+}
+
+#dex-new-pairs .scanner-age {
+  color: #16c784;
+  font-weight: 700;
+}
+
+#dex-new-pairs .scanner-trades {
+  color: #eeeeee;
+  font-weight: 700;
+}
+
+#dex-new-pairs .scanner-table tbody tr:hover td {
+  background: #080808 !important;
+}
+
 </style>
 </head>
 <body>
@@ -1132,11 +1158,13 @@ footer {
           <tr>
             <th>TOKEN</th>
             <th>NETWORK</th>
+            <th>AGE</th>
             <th>PRICE</th>
-            <th>24H CHANGE</th>
-            <th>MARKET CAP</th>
-            <th>LIQUIDITY</th>
+            <th>TXNS</th>
+            <th>BUYS / SELLS</th>
             <th>VOLUME 24H</th>
+            <th>LIQUIDITY</th>
+            <th>FDV</th>
           </tr>
         </thead>
         <tbody id="dex-new-body">
@@ -1678,6 +1706,167 @@ setInterval(loadTop100Crypto, 60000);
     return cell;
   }
 
+
+  function formatPoolAge(createdAt) {
+    const timestamp = Date.parse(createdAt);
+
+    if (!Number.isFinite(timestamp)) return "--";
+
+    const seconds = Math.max(
+      0,
+      Math.floor((Date.now() - timestamp) / 1000)
+    );
+
+    if (seconds < 60) return seconds + "s";
+
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return minutes + "m";
+
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return hours + "h";
+
+    const days = Math.floor(hours / 24);
+    if (days < 30) return days + "d";
+
+    const months = Math.floor(days / 30);
+    if (months < 12) return months + "mo";
+
+    return Math.floor(months / 12) + "y";
+  }
+
+  function renderNewPairs(target, items) {
+    target.replaceChildren();
+
+    if (!items.length) {
+      const row = document.createElement("tr");
+      const cell = makeCell("No new pairs found.");
+      cell.colSpan = 9;
+      row.appendChild(cell);
+      target.appendChild(row);
+      return;
+    }
+
+    items.forEach(pool => {
+      const a = pool.attributes || {};
+      const t = pool.token || {};
+      const tx = a.transactions?.h24 || {};
+
+      const row = document.createElement("tr");
+      const tokenCell = document.createElement("td");
+
+      const symbolText = (t.symbol || "?").toUpperCase();
+
+      if (t.image_url) {
+        const logo = document.createElement("img");
+        logo.className = "scanner-token-logo";
+        logo.src = t.image_url;
+        logo.alt = (t.name || "Token") + " logo";
+        logo.loading = "lazy";
+
+        const fallback = document.createElement("span");
+        fallback.className = "scanner-logo-fallback";
+        fallback.textContent = symbolText.slice(0, 2);
+        fallback.style.display = "none";
+
+        logo.onerror = () => {
+          logo.style.display = "none";
+          fallback.style.display = "inline-flex";
+        };
+
+        tokenCell.appendChild(logo);
+        tokenCell.appendChild(fallback);
+      } else {
+        const fallback = document.createElement("span");
+        fallback.className = "scanner-logo-fallback";
+        fallback.textContent = symbolText.slice(0, 2);
+        tokenCell.appendChild(fallback);
+      }
+
+      const name = document.createElement("span");
+      name.className = "scanner-pair-name";
+      name.textContent = t.name || a.name || "Unknown Token";
+      tokenCell.appendChild(name);
+
+      const symbol = document.createElement("span");
+      symbol.className = "scanner-subtext";
+      symbol.textContent = symbolText;
+      tokenCell.appendChild(symbol);
+
+      row.appendChild(tokenCell);
+
+      row.appendChild(makeCell(pool.networkName));
+
+      const ageCell = makeCell(formatPoolAge(a.pool_created_at));
+      ageCell.className = "scanner-age";
+      row.appendChild(ageCell);
+
+      row.appendChild(makeCell(formatPrice(a.base_token_price_usd)));
+
+      const hasTxData =
+        tx.buys !== undefined ||
+        tx.sells !== undefined;
+
+      const buys = Number(tx.buys || 0);
+      const sells = Number(tx.sells || 0);
+      const buyers = Number(tx.buyers || 0);
+      const sellers = Number(tx.sellers || 0);
+
+      const txCell = document.createElement("td");
+
+      if (hasTxData) {
+        const total = document.createElement("span");
+        total.textContent = String(buys + sells);
+        txCell.appendChild(total);
+
+        const details = document.createElement("span");
+        details.className = "scanner-subtext";
+        details.textContent =
+          buyers + " buyers · " + sellers + " sellers";
+        txCell.appendChild(details);
+      } else {
+        txCell.textContent = "—";
+      }
+
+      row.appendChild(txCell);
+
+      const tradeCell = document.createElement("td");
+
+      if (hasTxData) {
+        const tradeText = document.createElement("span");
+        tradeText.className = "scanner-trades";
+        tradeText.textContent = buys + " / " + sells;
+        tradeCell.appendChild(tradeText);
+      } else {
+        tradeCell.textContent = "—";
+      }
+
+      row.appendChild(tradeCell);
+
+      const volume = a.volume_usd?.h24;
+      row.appendChild(
+        makeCell(volume == null ? "—" : compactUSD(volume))
+      );
+
+      row.appendChild(
+        makeCell(
+          a.reserve_in_usd == null
+            ? "—"
+            : compactUSD(a.reserve_in_usd)
+        )
+      );
+
+      row.appendChild(
+        makeCell(
+          a.fdv_usd == null
+            ? "—"
+            : compactUSD(a.fdv_usd)
+        )
+      );
+
+      target.appendChild(row);
+    });
+  }
+
   function renderTable(target, items, emptyMessage, useTimeframe) {
     target.replaceChildren();
 
@@ -1818,7 +2007,7 @@ setInterval(loadTop100Crypto, 60000);
 
     const tf = timeframeSelect.value.toUpperCase();
 
-    renderTable(newBody, filteredNew, "No new pairs found.", false);
+    renderNewPairs(newBody, filteredNew);
     renderTable(trendingBody, filteredTrending, "No trending pools found.", false);
 
     renderTable(
