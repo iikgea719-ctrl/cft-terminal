@@ -2852,6 +2852,18 @@ setInterval(loadTop100Crypto, 60000);
   const REFRESH_INTERVAL = 60000;
   const REQUEST_GAP = 1200;
 
+  const NETWORK_FILTERS = [
+    { id: "solana", label: "SOL" },
+    { id: "robinhood", label: "HOOD" },
+    { id: "elysium", label: "ELYSIUM" },
+    { id: "bsc", label: "BNB" },
+    { id: "base", label: "BASE" },
+    { id: "eth", label: "ETH" },
+    { id: "hyperliquid", label: "HYPE" },
+    { id: "arc", label: "ARC" },
+    { id: "ink", label: "INK" }
+  ];
+
   const elements = {
     section: document.getElementById("all-coins"),
     status: document.getElementById("all-coins-status"),
@@ -2886,6 +2898,11 @@ setInterval(loadTop100Crypto, 60000);
 
   const networkIcons = {
     ethereum: "ethereum",
+    robinhood: "robinhood",
+    elysium: "elysium",
+    hyperliquid: "hyperliquid",
+    arc: "circle",
+    ink: "ink",
     eth: "ethereum",
     solana: "solana",
     bsc: "bnbchain",
@@ -3157,6 +3174,7 @@ setInterval(loadTop100Crypto, 60000);
         ? network.attributes.name
         : id;
 
+      const label = network.displayLabel || name;
       const slug = networkIcon(id);
       const icon = slug
         ? `<img src="${iconURL(slug)}" alt=""
@@ -3169,7 +3187,7 @@ setInterval(loadTop100Crypto, 60000);
           data-network="${escapeHTML(id)}"
           title="${escapeHTML(name)}">
           <span class="all-coins-network-icon">${icon}</span>
-          <span>${escapeHTML(name)}</span>
+          <span>${escapeHTML(label)}</span>
         </button>`;
     }).join("");
 
@@ -3284,11 +3302,53 @@ setInterval(loadTop100Crypto, 60000);
 
   async function loadNetworks() {
     try {
-      const response = await apiRequest(API + "/networks?page=1");
-      networks = response.data || [];
+      const allNetworks = [];
+      let nextUrl = API + "/networks?page=1";
+      let pageCount = 0;
+
+      while (nextUrl && pageCount < 20) {
+        const response = await apiRequest(nextUrl);
+
+        allNetworks.push(...(response.data || []));
+        nextUrl = response.links && response.links.next
+          ? response.links.next
+          : null;
+
+        pageCount += 1;
+      }
+
+      const networkMap = new Map(
+        allNetworks.map(function (network) {
+          return [network.id, network];
+        })
+      );
+
+      networks = NETWORK_FILTERS.map(function (filter) {
+        const network = networkMap.get(filter.id);
+
+        if (!network) {
+          console.warn("Network not found:", filter.id);
+          return null;
+        }
+
+        return {
+          ...network,
+          displayLabel: filter.label
+        };
+      }).filter(Boolean);
+
       renderNetworks();
+
+      console.log(
+        "ALL COINS networks loaded:",
+        networks.map(function (network) {
+          return network.displayLabel + " (" + network.id + ")";
+        })
+      );
+
     } catch (error) {
       console.error("ALL COINS network error:", error);
+
       elements.networks.innerHTML =
         '<span class="all-coins-muted">Unable to load network list. Try refreshing.</span>';
     }
